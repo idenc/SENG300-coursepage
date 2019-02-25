@@ -146,23 +146,27 @@
                                                         <div class="field-item even" property="content:encoded">
                                                             <h3>
                                                                 {%- for c in alphabet -%}
-                                                                    <a href="{{ url_for('home', letter=c)}}">{{c}}</a> |&thinsp;
+                                                                    <a href="{{ url_for('home', letter=c) }}">{{ c }}</a>
+                                                                     |&thinsp;
                                                                 {%- endfor -%}
                                                             </h3>
                                                             {% for c in alphabet %}
                                                                 <p>&nbsp;</p>
-                                                                <table border="0" cellpadding="1" cellspacing="1" style="width:100%">
+                                                                <table border="0" cellpadding="1" cellspacing="1"
+                                                                       style="width:100%">
                                                                     <tbody>
                                                                     <tr>
                                                                         <td>
-                                                                            <h3><a id="{{ c }}" name="{{ c }}"></a><strong>{{ c }}</strong></h3>
+                                                                            <h3><a id="{{ c }}"
+                                                                                   name="{{ c }}"></a><strong>{{ c }}</strong>
+                                                                            </h3>
                                                                         </td>
                                                                     </tr>
                                                                     {% for row in depts %}
                                                                         {% if row[0][0] == c %}
                                                                             <tr>
                                                                                 <td>
-                                                                                 <a href="">{{ row[0] }}</a>
+                                                                                    <a href="">{{ row[0] }}</a>
                                                                                 </td>
                                                                             </tr>
                                                                         {% endif %}
