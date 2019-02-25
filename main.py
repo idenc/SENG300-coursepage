@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
-from string import ascii_uppercase
 import yaml
 
 app = Flask(__name__)
@@ -33,4 +32,4 @@ def home():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=80)
