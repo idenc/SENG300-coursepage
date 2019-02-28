@@ -16,7 +16,7 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="cleartype" content="on">
-    <title>Listing of Departments</title>
+    <title>{{ name }}</title>
     <link type="text/css" rel="stylesheet"
           href="../static/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css"
           media="all">
@@ -32,9 +32,6 @@
     <style type="text/css" media="all">
         <!-- /*--><![CDATA[/*><!--*/
         @media screen and (min-width: 850px) {
-            .responsive-menu-block-wrapper.responsive-menu-block {
-                display: block;
-            }
 
             #block-responsive-menu-toggle {
                 display: none;
@@ -123,7 +120,7 @@
                     <div id="content" class="column">
                         <div class="section">
                             <a id="main-content"></a>
-                            <h1 class="title" id="page-title">Listing of Departments</h1>
+                            <h1 class="title" id="page-title">Listing of Courses in {{ name }}</h1>
                             <div class="tabs">
                             </div>
                             <div class="region region-content">
@@ -143,36 +140,85 @@
                                                 <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                                     <div class="field-items">
                                                         <div class="field-item even" property="content:encoded">
-                                                            <h3>
-                                                                {%- for c in alphabet -%}
-                                                                    <a href="{{ url_for('home', letter=c) }}">{{ c }}</a>
-                                                                     |&thinsp;
-                                                                {%- endfor -%}
-                                                            </h3>
-                                                            {% for c in alphabet %}
-                                                                <p>&nbsp;</p>
-                                                                <table border="0" cellpadding="1" cellspacing="1"
-                                                                       style="width:100%">
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <h3><a id="{{ c }}"
-                                                                                   name="{{ c }}"></a><strong>{{ c }}</strong>
-                                                                            </h3>
-                                                                        </td>
-                                                                    </tr>
-                                                                    {% for row in depts %}
-                                                                        {% if row[0][0] == c %}
+                                                            <table cellpadding="2" cellspacing="0" width='100%'
+                                                                   align="center" border="0" bordercolor='#000000'
+                                                                   bgcolor='white'>
+
+                                                                <tr>
+                                                                    <td>
+                                                                        <table cellpadding="2" cellspacing="0"
+                                                                               border="0" width='100%'>
                                                                             <tr>
-                                                                                <td>
-                                                                                    <a href="{{ url_for('courses', id=row[1])}}">{{ row[0] }}</a>
+                                                                                <td bgcolor='#333333' width='10%'
+                                                                                    valign='top'>
+                                                                                    <nobr>
+                                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCourse"
+                                                                                              class="course-code">Computer Science </span>
+                                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
+                                                                                              class="course-code">203</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                    </nobr>
                                                                                 </td>
+                                                                                <td bgcolor='#333333' width='90%'
+                                                                                    valign='top'>
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnTitle"
+                                                                                          class="course-code">Introduction to Problem Solving using Application Software</span>
+                                                                                </td>
+
                                                                             </tr>
-                                                                        {% endif %}
-                                                                    {% endfor %}
-                                                                    </tbody>
-                                                                </table>
-                                                            {% endfor %}
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="myCell">
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnDescription"
+                                                                              class="course-desc">Introduction to computer fundamentals; contemporary topics, such as security and privacy, and the Internet and World Wide Web. Problem solving, analysis and design using application software such as spreadsheets.</span>
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Hour"
+                                                                              class="course-label"><br>Course Hours:</span>
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnHours"
+                                                                              class="course-hours">3 units; (4-0)</span>
+
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnPrerequisites"
+                                                                              class="course-prereq"></span>
+
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCorequisites"
+                                                                              class="course-coreq"></span>
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Antireq"
+                                                                              class="course-label"><br>Antirequisite(s):</span>
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnAntirequisites"
+                                                                              class="course-antireq">Not open to Computer Science majors.</span>
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Note"
+                                                                              class="course-label"><br>Notes:</span>
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnNotes"
+                                                                              class="course-notes">Basic familiarity with personal computers and commonly used software, including word processors, electronic mail and web browsers, will be assumed.</span>
+
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnAKA"
+                                                                              class="course-aka"></span>
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Rep"
+                                                                              class="course-label"></span>
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnRepeat"
+                                                                              class="course-repeat"><br> </span>
+
+
+                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnNoGpa"
+                                                                              class="course-nogpa"></span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="backtotop" align="right"><a href='#top'>back
+                                                                        to top</a></td>
+                                                                </tr>
+                                                            </table>
+
                                                         </div>
                                                     </div>
                                                 </div>
