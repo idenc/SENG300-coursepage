@@ -142,21 +142,21 @@
                                                         <div class="field-item even" property="content:encoded">
                                                             {% for row in courses %}
                                                                 <table cellpadding="2" cellspacing="0" width='100%'
-                                                                       align="center" border="0" bordercolor='#000000'
+                                                                       align="center" border="0"
                                                                        bgcolor='white'>
 
                                                                     <tr>
                                                                         <td>
                                                                             <table cellpadding="2" cellspacing="0"
-                                                                                   border="0" width='100%'>
-                                                                                <tr>
+                                                                                   border="0" width='100%' style="margin: 0">
+                                                                                <tr style="color: white">
                                                                                     <td bgcolor='#333333' width='10%'
                                                                                         valign='top'>
                                                                                         <nobr>
                                                                                             <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCourse"
                                                                                                   class="course-code">{{ name }} </span>
                                                                                             <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
-                                                                                                  class="course-code">{{ row[0] }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                                  class="course-code">{{row[3]}}0{{ row[0] }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                                         </nobr>
                                                                                     </td>
                                                                                     <td bgcolor='#333333' width='90%'
