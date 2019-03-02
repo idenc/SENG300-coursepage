@@ -1,7 +1,6 @@
-
 /**
  * Validate username && password
- * Retrieve token from backend and store to local storage 
+ * Retrieve token from backend and store to local storage
  */
 
 
@@ -12,24 +11,24 @@ const inputUsername = "#inputUsername";
 const inputPassword = "#inputPassword";
 const reject = "#declineSession";
 
-$(function(){
-    $("button[type='submit']").click(function(ev){
+$(function () {
+    $("button[type='submit']").click(function (ev) {
         ev.preventDefault();
         var username = $(inputUsername).val();
         var password = $(inputPassword).val();
-        if (username.length > 0 && password.length > 0){
+        if (username.length > 0 && password.length > 0) {
             loginSubmit(username, password);
         }
     });
 });
 
-function loginSubmit(i_username, i_password){
+function loginSubmit(i_username, i_password) {
     $.post(loginURL, {
         username: i_username,
         password: i_password,
-    }, function(data){
+    }, function (data) {
         result = $.parseJSON(data);
-        if (result.token){
+        if (result.token) {
             createSession(data);
         } else {
             declineSession();
@@ -37,11 +36,11 @@ function loginSubmit(i_username, i_password){
     });
 }
 
-function declineSession(){
+function declineSession() {
     $(reject).text(decline);
 }
 
-function createSession(data){
+function createSession(data) {
     localStorage.setItem("session", data);
     window.location = home;
 }
