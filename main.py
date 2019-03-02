@@ -1,8 +1,26 @@
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 import yaml
+import json
+import time
 
 app = Flask(__name__)
+
+# Config environment
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.jinja_env.auto_reload = True
+
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 # Config DB
 db = yaml.load(open('db.yaml'))
@@ -43,5 +61,25 @@ def courses():
     return render_template('courses.html', name=name, courses=courses)
 
 
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if (request.method == 'POST'):
+        username = request.form["username"]
+        password = request.form["password"]
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT COUNT(*) FROM user WHERE username = '{0}' AND password = '{1}'".format(username, password))
+        if (cur.fetchone()[0] != 0):
+            data = {
+                "username": username,
+                "token": int(round(time.time() * 1000)),
+            }
+            return json.dumps(data)
+        else:
+            data = {
+                "error": 404,
+            }
+            return json.dumps(data)
+    return render_template('login.html')
+    
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=80)
+    app.run(debug=True, host="0.0.0.0", port=80)

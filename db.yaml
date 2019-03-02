@@ -1,0 +1,4 @@
+mysql_host: '35.239.19.209'
+mysql_user: 'sengfolks'
+mysql_password: '12345'
+mysql_db: 'project_database'
