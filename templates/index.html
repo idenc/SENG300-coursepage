@@ -21,16 +21,16 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link type="text/css" rel="stylesheet"
-          href="../static/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css"
+          href="../static/css/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css"
           media="all">
     <link type="text/css" rel="stylesheet"
-          href="../static/css_Q7R7Blo9EYqLDI5rIlO_T3uTFBjIXjLpcqMHjTvVdmg.css"
+          href="../static/css/css_Q7R7Blo9EYqLDI5rIlO_T3uTFBjIXjLpcqMHjTvVdmg.css"
           media="all">
     <link type="text/css" rel="stylesheet"
-          href="../static/css_8I8tOCPjIVP6mfeMJ_e9IPVH1CnLb6wMloNuja55pnc.css"
+          href="../static/css/css_8I8tOCPjIVP6mfeMJ_e9IPVH1CnLb6wMloNuja55pnc.css"
           media="all">
     <link type="text/css" rel="stylesheet"
-          href="../static/css_eoNAyUWYNCJe87dVtl8OkzwGQA-Fzt7GW8riL_JY1WI.css"
+          href="../static/css/css_eoNAyUWYNCJe87dVtl8OkzwGQA-Fzt7GW8riL_JY1WI.css"
           media="all">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
@@ -40,7 +40,7 @@
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
 
-    <script type="text/javascript" src="../static/src/script/navbar.js"></script>
+    <script type="text/javascript" src="../static/script/navbar.js"></script>
 
     <style type="text/css" media="all">
         <!-- /*--><![CDATA[/*><!--*/
@@ -58,14 +58,16 @@
         -->
     </style>
     <link type="text/css" rel="stylesheet"
-          href="../static/css_Fgs9ajKnKYWaoh3U_IBQPfPYrEeFCB6j4j2eqRj91HE.css"
+          href="../static/css/css_Fgs9ajKnKYWaoh3U_IBQPfPYrEeFCB6j4j2eqRj91HE.css"
           media="all">
+
     <link type="text/css" rel="stylesheet"
-          href="../static/css_pbkK7ZuOTZMbF-RtU8mNEYyeLgIS_33hZyliYIiTVV0.css"
-          media="all">
-    <link type="text/css" rel="stylesheet"
-          href="../static/css_2THG1eGiBIizsWFeexsNe1iDifJ00QRS9uSd03rY9co.css"
+          href="../static/css/css_2THG1eGiBIizsWFeexsNe1iDifJ00QRS9uSd03rY9co.css"
           media="print">
+
+    <link type="text/css" rel="stylesheet"
+          href="../static/css/css_aysekUjc5c4p9JX5Yuqf9coDskQ2_Rrt5rzuqeP40hc.css"
+          media="all">
 </head>
 <body class="html not-front not-logged-in one-sidebar sidebar-first page-node page-node- page-node-264 node-type-subject-areas-listing responsive-menu-processed">
 
@@ -74,7 +76,7 @@
         <a href="https://fas.calendar.utoronto.ca/listing-program-subject-areas#main-content"
            class="element-invisible element-focusable">Skip to main content</a>
     </div>
-    <div id="page-wrapper">
+    <div id="page-wrapper" style="min-height: -webkit-fill-available;">
         <div id="page">
             <div id="navbar"></div>
             <header id="header" role="banner" class="without-secondary-menu">
@@ -116,7 +118,7 @@
 
                         <div id="site-name">
                             <strong>
-                                <a href="https://fas.calendar.utoronto.ca/" title="Home" rel="home"><span>Faculty of Arts &amp; Science Calendar</span></a>
+                                <a href="{{ url_for('home') }}" title="Home" rel="home"><span>Course Calender</span></a>
                             </strong>
                         </div>
 
@@ -135,7 +137,7 @@
                     <div id="content" class="column">
                         <div class="section">
                             <a id="main-content"></a>
-                            <h1 class="title" id="page-title">Listing of Departments</h1>
+                            <h1 class="title" id="page-title" style="color: black">Listing of Departments</h1>
                             <div class="tabs">
                             </div>
                             <div class="region region-content">
@@ -289,37 +291,46 @@
                     </div>
                 </div>
             </div> <!-- /.section, /#sidebar-first -->
-        </div>
-    </div> <!-- /#main, /#main-wrapper -->
+            <div id="footer-wrapper">
+                <div class="section">
 
 
-    <div id="footer-wrapper">
-        <div class="section">
-            <footer id="footer" role="contentinfo" class="clearfix">
-                <div class="region region-footer">
-                    <div id="block-views-updated-date-block-block" class="block block-views">
-                        <div class="content">
-                            <div class="view view-updated-date-block view-id-updated_date_block view-display-id-block view-dom-id-e2886c666592450bb658340353599b08">
-                                <div class="view-content">
-                                    <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
+                    <footer id="footer" role="contentinfo" class="clearfix">
+                        <div class="region region-footer">
+                            <div id="block-views-updated-date-block-block" class="block block-views">
 
-                                        <div class="views-field views-field-title"></div>
+
+                                <div class="content">
+                                    <div class="view view-updated-date-block view-id-updated_date_block view-display-id-block view-dom-id-c4a0785e3042b36f356cb69f1908e144">
+
+
+                                        <div class="view-content">
+                                            <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
+
+                                                <div class="views-field views-field-title">
+                                                    <span class="field-content"><p class="rteright">Template for this website from the University of Toronto</p></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </footer> <!-- /#footer -->
+
                 </div>
-            </footer> <!-- /#footer -->
+            </div>
         </div>
-    </div> <!-- /.section, /#footer-wrapper -->
+    </div> <!-- /#main, /#main-wrapper -->
+    <div class="region region-page-bottom">
+        <div class="off-canvas-wrapper"></div>
+    </div>
+
 </div>
-</div>
-<div class="region region-page-bottom">
-    <div class="off-canvas-wrapper"></div>
-</div>
-</div>
-<!-- /#page, /#page-wrapper -->
+
+
 <div id="mm-blocker" class="mm-slideout"></div>
 </body>
 </html>

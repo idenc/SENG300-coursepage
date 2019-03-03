@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.jinja_env.auto_reload = True
 
+
 @app.after_request
 def add_header(r):
     """
@@ -21,6 +22,7 @@ def add_header(r):
     r.headers["Expires"] = "0"
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
+
 
 # Config DB
 db = yaml.load(open('db.yaml'))
@@ -63,12 +65,12 @@ def courses():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
         cur = mysql.connection.cursor()
         cur.execute("SELECT COUNT(*) FROM user WHERE username = '{0}' AND password = '{1}'".format(username, password))
-        if (cur.fetchone()[0] != 0):
+        if cur.fetchone()[0] != 0:
             data = {
                 "username": username,
                 "token": int(round(time.time() * 1000)),
@@ -80,6 +82,7 @@ def login():
             }
             return json.dumps(data)
     return render_template('login.html')
-    
+
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=80)
