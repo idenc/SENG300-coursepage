@@ -157,6 +157,7 @@
                                                     <div class="field-items">
                                                         <div class="field-item even" property="content:encoded">
                                                             {% for row in courses %}
+                                                                {% set outer_loop = loop %}
                                                                 <div>
                                                                     <a name="{{ row[0] }}"></a>
                                                                     <table cellpadding="2" cellspacing="0" width='100%'
@@ -188,17 +189,23 @@
 
                                                                                 <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Prereq"
                                                                                       class="course-label"><br>Prerequisite(s):</span>
-                                                                                <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnPrerequisites"
-                                                                                        {% set string = 'href =#' ~ row[4] %}
-                                                                                      class="course-prereq"><a {{ '' if row[4] == None else string }}
-                                                                                        class="link-text">
-                                                                                    {% if row[4] == None %}
-                                                                                        None
-                                                                                    {% else %}
-                                                                                        {{ row[8] }} {{ row[5] }}0
-                                                                                        {{ row[4] }}
-                                                                                    {% endif %}</a>
-                                                                                </span>
+                                                                                {% if pre_reqs[outer_loop.index - 1]|length == 0 %}
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnPrerequisites"
+                                                                                          class="course-prereq">
+                                                                                        <a class="link-text">None</a>
+                                                                                    </span>
+                                                                                {% else %}
+                                                                                    {% for req in pre_reqs[outer_loop.index - 1] %}
+                                                                                        <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnPrerequisites"
+                                                                                                {% set string = 'href=' ~ url_for('courses', id=req[4]) ~ "#" ~ req[0] %}
+                                                                                              class="course-prereq">
+                                                                                        <a {{ string }}
+                                                                                                class="link-text">
+                                                                                            {{ req[5] }} {{ req[3] }}0{{ req[0] }}
+                                                                                        </a>
+                                                                                    </span>
+                                                                                    {% endfor %}
+                                                                                {% endif %}
 
 
                                                                                 <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCorequisites"
@@ -206,18 +213,23 @@
 
                                                                                 <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Antireq"
                                                                                       class="course-label"><br>Antirequisite(s):</span>
+                                                                                {% if anti_reqs[outer_loop.index - 1]|length == 0 %}
                                                                                 <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
-                                                                                        {% set string = 'href =#' ~ row[6] %}
-                                                                                      class="course-antireq"><a {{ '' if row[6] == None else string }}
-                                                                                        class="link-text">
-                                                                                    {% if row[6] == None %}
-                                                                                        None
-                                                                                    {% else %}
-                                                                                        {{ row[9] }} {{ row[7] }}0
-                                                                                        {{ row[6] }}
-                                                                                    {% endif %}
-                                                                                    </a>
+                                                                                      class="course-antireq">
+                                                                                    <a class="link-text">None</a>
                                                                                 </span>
+                                                                                {% else %}
+                                                                                    {% for req in anti_reqs[outer_loop.index - 1] %}
+                                                                                        <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
+                                                                                                {% set string = 'href=' ~ url_for('courses', id=req[4]) ~ "#" ~ req[0] %}
+                                                                                              class="course-antireq">
+                                                                                            <a {{ string }}
+                                                                                                    class="link-text">
+                                                                                                {{ req[5] }} {{ req[3] }}0{{ req[0] }}
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    {% endfor %}
+                                                                                {% endif %}
 
                                                                                 <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Note"
                                                                                       class="course-label"><br>Recommended year of study to take this course: </span>

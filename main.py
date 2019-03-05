@@ -58,20 +58,27 @@ def courses():
     cur.execute("SELECT dep_name FROM department WHERE dep_code = %s", id)
     name = cur.fetchone()[0]
 
-    query = f"""SELECT c1.crs_code, c1.crs_title, c1.crs_description, c1.crs_year, c2.crs_code, c2.crs_year, c3.crs_code, c3.crs_year, d1.dep_name, d2.dep_name
-                FROM course AS c1
-                LEFT JOIN prerequisite AS p ON c1.crs_code = p.crs_code
-                LEFT JOIN course AS c2 ON p.crs_requires = c2.crs_code
-                LEFT JOIN antirequisite AS a ON c1.crs_code = a.crs_code
-                LEFT JOIN course AS c3 ON a.crs_anti = c3.crs_code
-                LEFT JOIN department AS d1 ON c2.dep_code = d1.dep_code
-                LEFT JOIN department AS d2 ON c3.dep_code = d2.dep_code
-                WHERE c1.dep_code = {1}"""
-
-    cur.execute(query)
+    cur.execute("SELECT * FROM course WHERE dep_code = %s", id)
     courses = cur.fetchall()
 
-    return render_template('courses.html', name=name, courses=courses)
+    pre_reqs = []
+    anti_reqs = []
+    for row in courses:
+        query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department WHERE prerequisite.crs_code = {
+        row[0]}' \
+            f' AND prerequisite.crs_requires = course.crs_code AND course.dep_code = department.dep_code'
+        cur.execute(query)
+        temp = cur.fetchall()
+        pre_reqs.append(temp)
+
+        query = f'SELECT course.*, department.dep_name FROM course, antirequisite, department WHERE antirequisite.crs_code = {
+        row[0]}' \
+            f' AND antirequisite.crs_anti = course.crs_code AND course.dep_code = department.dep_code'
+        cur.execute(query)
+        temp = cur.fetchall()
+        anti_reqs.append(temp)
+
+    return render_template('courses.html', name=name, courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
 
 
 @app.route('/login', methods=['POST', 'GET'])
