@@ -1,11 +1,18 @@
 <head>
     <link rel="stylesheet" href="../static/css/login.css"/>
+    <link rel="stylesheet" href="../static/css/nice-select.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../static/script/jquery.nice-select.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('select').niceSelect();
+        });
 
+    </script>
     <script type="text/javascript" src="../static/script/login.js"></script>
-    <title>Login</title>
+    <title>Add Course</title>
 
 </head>
 
@@ -31,8 +38,9 @@
                             <label for="new_course_description">New Course Description</label>
                         </div>
 
-                        <label for="new_course_year">New Course Year
+                        <label for="new_course_year">
                             <select name="new_course_year">
+                                <option selected disabled>New Course Year</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -40,8 +48,9 @@
                             </select>
                         </label>
 
-                        <label for="new_course_dep">New Course Department
+                        <label for="new_course_dep">
                             <select name="new_course_dep">
+                                <option selected disabled>New Course Department</option>
                                 {% for name in dep_names %}
                                     <option value="{{ name[0] }}">{{ name[1] }}</option>
                                 {% endfor %}
