@@ -64,15 +64,15 @@ def courses():
     pre_reqs = []
     anti_reqs = []
     for row in courses:
-        query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department WHERE prerequisite.crs_code = {
-        row[0]}' \
+        query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department ' \
+            f'WHERE prerequisite.crs_code = {row[0]}' \
             f' AND prerequisite.crs_requires = course.crs_code AND course.dep_code = department.dep_code'
         cur.execute(query)
         temp = cur.fetchall()
         pre_reqs.append(temp)
 
-        query = f'SELECT course.*, department.dep_name FROM course, antirequisite, department WHERE antirequisite.crs_code = {
-        row[0]}' \
+        query = f'SELECT course.*, department.dep_name FROM course, antirequisite, department ' \
+            f'WHERE antirequisite.crs_code = {row[0]}' \
             f' AND antirequisite.crs_anti = course.crs_code AND course.dep_code = department.dep_code'
         cur.execute(query)
         temp = cur.fetchall()
@@ -100,6 +100,30 @@ def login():
             }
             return json.dumps(data)
     return render_template('login.html')
+
+
+@app.route('/addcourse', methods=['POST', 'GET'])
+def add_course():
+    conn = mysql.connect
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM department")
+    names = cur.fetchall()
+    error = None
+    if request.method == 'POST':
+        course_title = request.form["new_course_title"]
+        course_description = request.form["new_course_description"]
+        course_year = request.form["new_course_year"]
+        course_department = request.form["new_course_dep"]
+        try:
+            query = f'INSERT INTO course (`crs_title`, `crs_description`, `crs_year`, `dep_code`)' \
+                f" VALUES ('{course_title}', '{course_description}', {course_year}, {course_department})"
+            print(query)
+            cur.execute(query)
+            conn.commit()
+            error = "Success!"
+        except Exception as e:
+            error = "Problem creating course: " + str(e)
+    return render_template('addcourse.html', dep_names=names, error=error)
 
 
 if __name__ == '__main__':
