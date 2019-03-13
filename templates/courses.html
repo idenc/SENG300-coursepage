@@ -169,7 +169,7 @@
                                                                                     <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCourse"
                                                                                           class="course-code">{{ name }} </span>
                                                                                 <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
-                                                                                      class="course-code">{{ row[3] }}0{{ row[0] }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                      class="course-code">{{ row[3] }}{{ '%02d' % row[0]|int  }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                                 <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnTitle"
                                                                                       class="course-code">{{ row[1] }}</span>
                                                                             </th>
@@ -201,7 +201,7 @@
                                                                                               class="course-prereq">
                                                                                         <a {{ string }}
                                                                                                 class="link-text">
-                                                                                            {{ req[5] }} {{ req[3] }}0{{ req[0] }}
+                                                                                            {{ req[5] }} {{ req[3] }}{{ '%02d' % req[0]|int }}
                                                                                         </a>
                                                                                     </span>
                                                                                     {% endfor %}
@@ -225,7 +225,7 @@
                                                                                               class="course-antireq">
                                                                                             <a {{ string }}
                                                                                                     class="link-text">
-                                                                                                {{ req[5] }} {{ req[3] }}0{{ req[0] }}
+                                                                                                {{ req[5] }} {{ req[3] }}{{ '%02d' % req[0]|int }}
                                                                                             </a>
                                                                                         </span>
                                                                                     {% endfor %}
