@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="shortcut icon" href="https://fas.calendar.utoronto.ca/sites/public/fas/files/favicon.ico"
+    <link rel="shortcut icon" href="../static/alpha.png"
           type="image/vnd.microsoft.icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="MobileOptimized" content="width">
@@ -214,8 +214,8 @@
                                                                                 <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Antireq"
                                                                                       class="course-label"><br>Antirequisite(s):</span>
                                                                                 {% if anti_reqs[outer_loop.index - 1]|length == 0 %}
-                                                                                <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
-                                                                                      class="course-antireq">
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
+                                                                                          class="course-antireq">
                                                                                     <a class="link-text">None</a>
                                                                                 </span>
                                                                                 {% else %}
@@ -280,7 +280,7 @@
                                                     <div class="views-field views-field-title">
                                                         <span class="field-content">
                                                             <div id="sidebar_link">
-                                                                <h3><a href="">Program&nbsp;Areas</a></h3>
+                                                                <h3><a href="{{ url_for('home') }}">Departments</a></h3>
                                                             </div>
                                                         </span>
                                                     </div>
@@ -289,7 +289,7 @@
                                                     <div class="views-field views-field-title">
                                                         <span class="field-content">
                                                             <div id="sidebar_link">
-                                                                <h3><a href="">Program Search</a></h3>
+                                                                <h3><a href="">Programs</a></h3>
                                                             </div>
                                                         </span>
                                                     </div>

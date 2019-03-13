@@ -51,16 +51,7 @@ def home():
     return render_template('index.html', alphabet=sorted(alphabet), depts=dept_details)
 
 
-@app.route('/courses')
-def courses():
-    cur = mysql.connection.cursor()
-    id = request.args.get('id')
-    cur.execute("SELECT dep_name FROM department WHERE dep_code = %s", id)
-    name = cur.fetchone()[0]
-
-    cur.execute("SELECT * FROM course WHERE dep_code = %s", id)
-    courses = cur.fetchall()
-
+def get_requisites(courses, cur):
     pre_reqs = []
     anti_reqs = []
     for row in courses:
@@ -77,6 +68,19 @@ def courses():
         cur.execute(query)
         temp = cur.fetchall()
         anti_reqs.append(temp)
+    return pre_reqs, anti_reqs
+
+
+@app.route('/courses')
+def courses():
+    cur = mysql.connection.cursor()
+    id = request.args.get('id')
+    cur.execute("SELECT dep_name FROM department WHERE dep_code = %s", id)
+    name = cur.fetchone()[0]
+
+    cur.execute("SELECT * FROM course WHERE dep_code = %s GROUP BY crs_year, crs_code", id)
+    courses = cur.fetchall()
+    pre_reqs, anti_reqs = get_requisites(courses, cur)
 
     return render_template('courses.html', name=name, courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
 
@@ -115,7 +119,7 @@ def add_course():
         course_year = request.form["new_course_year"]
         course_department = request.form["new_course_dep"]
         try:
-            query = f'INSERT INTO course (`crs_title`, `crs_description`, `crs_year`, `dep_code`)' \
+            query = f"INSERT INTO course (`crs_title`, `crs_description`, `crs_year`, `dep_code`)" \
                 f" VALUES ('{course_title}', '{course_description}', {course_year}, {course_department})"
             print(query)
             cur.execute(query)
