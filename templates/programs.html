@@ -9,17 +9,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="shortcut icon" href="../static/alpha.png"
+    <link rel="shortcut icon" href="https://fas.calendar.utoronto.ca/sites/public/fas/files/favicon.ico"
           type="image/vnd.microsoft.icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="MobileOptimized" content="width">
     <meta name="HandheldFriendly" content="true">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="cleartype" content="on">
-    <title>Listing of Departments</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>{{ name }}</title>
     <link type="text/css" rel="stylesheet"
           href="../static/css/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css"
           media="all">
@@ -32,6 +29,7 @@
     <link type="text/css" rel="stylesheet"
           href="../static/css/css_eoNAyUWYNCJe87dVtl8OkzwGQA-Fzt7GW8riL_JY1WI.css"
           media="all">
+    <link rel="stylesheet" href="../static/css/courses.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
             integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
@@ -39,15 +37,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
-
     <script type="text/javascript" src="../static/script/navbar.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <style type="text/css" media="all">
         <!-- /*--><![CDATA[/*><!--*/
         @media screen and (min-width: 850px) {
-            .responsive-menu-block-wrapper.responsive-menu-block {
-                display: block;
-            }
 
             #block-responsive-menu-toggle {
                 display: none;
@@ -57,6 +53,7 @@
         /*]]>*/
         -->
     </style>
+
     <link type="text/css" rel="stylesheet"
           href="../static/css/css_Fgs9ajKnKYWaoh3U_IBQPfPYrEeFCB6j4j2eqRj91HE.css"
           media="all">
@@ -76,10 +73,11 @@
         <a href="https://fas.calendar.utoronto.ca/listing-program-subject-areas#main-content"
            class="element-invisible element-focusable">Skip to main content</a>
     </div>
-    <!--suppress CssInvalidPropertyValue -->
-    <div id="page-wrapper" style="min-height: -webkit-fill-available;">
+    <div id="page-wrapper">
         <div id="page">
+
             <div id="navbar"></div>
+
             <header id="header" role="banner" class="without-secondary-menu">
                 <div class="section clearfix">
 
@@ -138,7 +136,7 @@
                     <div id="content" class="column">
                         <div class="section">
                             <a id="main-content"></a>
-                            <h1 class="title" id="page-title" style="color: black">Listing of Departments</h1>
+                            <h1 class="title" id="page-title" style="color: black">Listing of Courses in {{ name }}</h1>
                             <div class="tabs">
                             </div>
                             <div class="region region-content">
@@ -158,44 +156,105 @@
                                                 <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                                     <div class="field-items">
                                                         <div class="field-item even" property="content:encoded">
-                                                            <h3>
-                                                                {%- for c in alphabet -%}
-                                                                    <a href="{{ url_for('home', letter=c) }}">{{ c }}</a>
-                                                                     |&thinsp;
-                                                                {%- endfor -%}
-                                                            </h3>
-                                                            {% for c in filter %}
-                                                                <p>&nbsp;</p>
-                                                                <table border="0" cellpadding="1" cellspacing="1"
-                                                                       style="width:100%">
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <h3><a id="{{ c }}"
-                                                                                   name="{{ c }}"></a><strong>{{ c }}</strong>
-                                                                            </h3>
-                                                                        </td>
-                                                                    </tr>
-                                                                    {% for row in depts %}
-                                                                        {% if row[0][0] == c %}
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <a>{{ row[0] }}</a>
-                                                                                    <a href="{{ url_for('dep_listing', id=row[1], type='courses') }}" style="float: right">Courses</a>
-                                                                                    <a href="{{ url_for('dep_listing', id=row[1], type='programs') }}" style="float: right; margin-right: 2%;">Programs</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                        {% endif %}
-                                                                    {% endfor %}
-                                                                    </tbody>
-                                                                </table>
+                                                            {% for row in courses %}
+                                                                {% set outer_loop = loop %}
+                                                                <div>
+                                                                    <a name="{{ row[0] }}"></a>
+                                                                    <table cellpadding="2" cellspacing="0" width='100%'
+                                                                           align="center" border="0"
+                                                                           bgcolor='white'>
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th scope="col">
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCourse"
+                                                                                          class="course-code">{{ name }} </span>
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
+                                                                                      class="course-code">{{ row[3] }}{{ '%02d' % row[0]|int }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnTitle"
+                                                                                      class="course-code">{{ row[1] }}</span>
+                                                                            </th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tr>
+                                                                            <td class="myCell">
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnDescription"
+                                                                                      class="course-desc">{{ row[2] }}</span>
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Hour"
+                                                                                      class="course-label"><br>Course Hours:</span>
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnHours"
+                                                                                      class="course-hours">3 units</span>
+
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Prereq"
+                                                                                      class="course-label"><br>Prerequisite(s):</span>
+                                                                                {% if pre_reqs[outer_loop.index - 1]|length == 0 %}
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnPrerequisites"
+                                                                                          class="course-prereq">
+                                                                                        <a class="link-text">None</a>
+                                                                                    </span>
+                                                                                {% else %}
+                                                                                    {% for req in pre_reqs[outer_loop.index - 1] %}
+                                                                                        <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnPrerequisites"
+                                                                                                {% set string = 'href=' ~ url_for('courses', id=req[4]) ~ "#" ~ req[0] %}
+                                                                                              class="course-prereq">
+                                                                                        <a {{ string }}
+                                                                                                class="link-text">
+                                                                                            {{ req[5] }} {{ req[3] }}{{ '%02d' % req[0]|int }}
+                                                                                        </a>
+                                                                                    </span>
+                                                                                    {% endfor %}
+                                                                                {% endif %}
+
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCorequisites"
+                                                                                      class="course-coreq"></span>
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Antireq"
+                                                                                      class="course-label"><br>Antirequisite(s):</span>
+                                                                                {% if anti_reqs[outer_loop.index - 1]|length == 0 %}
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
+                                                                                          class="course-antireq">
+                                                                                    <a class="link-text">None</a>
+                                                                                </span>
+                                                                                {% else %}
+                                                                                    {% for req in anti_reqs[outer_loop.index - 1] %}
+                                                                                        <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
+                                                                                                {% set string = 'href=' ~ url_for('courses', id=req[4]) ~ "#" ~ req[0] %}
+                                                                                              class="course-antireq">
+                                                                                            <a {{ string }}
+                                                                                                    class="link-text">
+                                                                                                {{ req[5] }} {{ req[3] }}{{ '%02d' % req[0]|int }}
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    {% endfor %}
+                                                                                {% endif %}
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Note"
+                                                                                      class="course-label"><br>Recommended year of study to take this course: </span>
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnAKA"
+                                                                                      class="course-aka">{{ row[3] }}</span>
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Rep"
+                                                                                      class="course-label"></span>
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnRepeat"
+                                                                                      class="course-repeat"><br> </span>
+
+
+                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnNoGpa"
+                                                                                      class="course-nogpa"></span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
                                                             {% endfor %}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         </article>
                                     </div>
                                 </div>
@@ -221,7 +280,7 @@
                                                     <div class="views-field views-field-title">
                                                         <span class="field-content">
                                                             <div id="sidebar_link">
-                                                                <h3><a href="{{ url_for('home') }}">Departments</a></h3>
+                                                                <h3><a href="">Program&nbsp;Areas</a></h3>
                                                             </div>
                                                         </span>
                                                     </div>
@@ -230,7 +289,7 @@
                                                     <div class="views-field views-field-title">
                                                         <span class="field-content">
                                                             <div id="sidebar_link">
-                                                                <h3><a href="">Programs</a></h3>
+                                                                <h3><a href="">Program Search</a></h3>
                                                             </div>
                                                         </span>
                                                     </div>
@@ -304,7 +363,7 @@
 
 
                                 <div class="content">
-                                    <div class="view view-updated-date-block view-id-updated_date_block view-display-id-block view-dom-id-c4a0785e3042b36f356cb69f1908e144">
+                                    <div class="view view-updated-date -block view-id-updated_date_block view-display-id-block view-dom-id-c4a0785e3042b36f356cb69f1908e144">
 
 
                                         <div class="view-content">
@@ -327,13 +386,13 @@
             </div>
         </div>
     </div> <!-- /#main, /#main-wrapper -->
+
     <div class="region region-page-bottom">
         <div class="off-canvas-wrapper"></div>
     </div>
 
+
 </div>
-
-
 <div id="mm-blocker" class="mm-slideout"></div>
 </body>
 </html>

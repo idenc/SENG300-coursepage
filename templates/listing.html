@@ -136,7 +136,7 @@
                     <div id="content" class="column">
                         <div class="section">
                             <a id="main-content"></a>
-                            <h1 class="title" id="page-title" style="color: black">Listing of Courses in {{ name }}</h1>
+                            <h1 class="title" id="page-title" style="color: black">Listing of {{ 'Courses' if courses else 'Programs' }} in {{ name }}</h1>
                             <div class="tabs">
                             </div>
                             <div class="region region-content">
@@ -156,101 +156,121 @@
                                                 <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                                     <div class="field-items">
                                                         <div class="field-item even" property="content:encoded">
-                                                            {% for row in courses %}
-                                                                {% set outer_loop = loop %}
-                                                                <div>
-                                                                    <a name="{{ row[0] }}"></a>
-                                                                    <table cellpadding="2" cellspacing="0" width='100%'
-                                                                           align="center" border="0"
-                                                                           bgcolor='white'>
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th scope="col">
-                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCourse"
-                                                                                          class="course-code">{{ name }} </span>
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
-                                                                                      class="course-code">{{ row[3] }}{{ '%02d' % row[0]|int  }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnTitle"
-                                                                                      class="course-code">{{ row[1] }}</span>
-                                                                            </th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tr>
-                                                                            <td class="myCell">
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnDescription"
-                                                                                      class="course-desc">{{ row[2] }}</span>
+                                                            {% if courses is defined %}
+                                                                {% for row in courses %}
+                                                                    {% set outer_loop = loop %}
+                                                                    <div>
+                                                                        <a name="{{ row[0] }}"></a>
+                                                                        <table cellpadding="2" cellspacing="0" width='100%'
+                                                                               align="center" border="0"
+                                                                               bgcolor='white'>
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th scope="col">
+                                                                                        <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCourse"
+                                                                                              class="course-code">{{ name }} </span>
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
+                                                                                          class="course-code">{{ row[3] }}{{ '%02d' % row[0]|int }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnTitle"
+                                                                                          class="course-code">{{ row[1] }}</span>
+                                                                                </th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tr>
+                                                                                <td class="myCell">
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnDescription"
+                                                                                          class="course-desc">{{ row[2] }}</span>
 
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Hour"
-                                                                                      class="course-label"><br>Course Hours:</span>
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Hour"
+                                                                                          class="course-label"><br>Course Hours:</span>
 
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnHours"
-                                                                                      class="course-hours">3 units</span>
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnHours"
+                                                                                          class="course-hours">3 units</span>
 
 
-                                                                                <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Prereq"
-                                                                                      class="course-label"><br>Prerequisite(s):</span>
-                                                                                {% if pre_reqs[outer_loop.index - 1]|length == 0 %}
-                                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnPrerequisites"
-                                                                                          class="course-prereq">
-                                                                                        <a class="link-text">None</a>
-                                                                                    </span>
-                                                                                {% else %}
-                                                                                    {% for req in pre_reqs[outer_loop.index - 1] %}
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Prereq"
+                                                                                          class="course-label"><br>Prerequisite(s):</span>
+                                                                                    {% if pre_reqs[outer_loop.index - 1]|length == 0 %}
                                                                                         <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnPrerequisites"
-                                                                                                {% set string = 'href=' ~ url_for('courses', id=req[4]) ~ "#" ~ req[0] %}
                                                                                               class="course-prereq">
-                                                                                        <a {{ string }}
-                                                                                                class="link-text">
-                                                                                            {{ req[5] }} {{ req[3] }}{{ '%02d' % req[0]|int }}
-                                                                                        </a>
-                                                                                    </span>
-                                                                                    {% endfor %}
-                                                                                {% endif %}
-
-
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCorequisites"
-                                                                                      class="course-coreq"></span>
-
-                                                                                <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Antireq"
-                                                                                      class="course-label"><br>Antirequisite(s):</span>
-                                                                                {% if anti_reqs[outer_loop.index - 1]|length == 0 %}
-                                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
-                                                                                          class="course-antireq">
-                                                                                    <a class="link-text">None</a>
-                                                                                </span>
-                                                                                {% else %}
-                                                                                    {% for req in anti_reqs[outer_loop.index - 1] %}
-                                                                                        <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
-                                                                                                {% set string = 'href=' ~ url_for('courses', id=req[4]) ~ "#" ~ req[0] %}
-                                                                                              class="course-antireq">
+                                                                                            <a class="link-text">None</a>
+                                                                                        </span>
+                                                                                    {% else %}
+                                                                                        {% for req in pre_reqs[outer_loop.index - 1] %}
+                                                                                            <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnPrerequisites"
+                                                                                                    {% set string = 'href=' ~ url_for('dep_listing', id=req[4], type='courses') ~ "#" ~ req[0] %}
+                                                                                                  class="course-prereq">
                                                                                             <a {{ string }}
                                                                                                     class="link-text">
                                                                                                 {{ req[5] }} {{ req[3] }}{{ '%02d' % req[0]|int }}
                                                                                             </a>
                                                                                         </span>
-                                                                                    {% endfor %}
-                                                                                {% endif %}
-
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Note"
-                                                                                      class="course-label"><br>Recommended year of study to take this course: </span>
-
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnAKA"
-                                                                                      class="course-aka">{{ row[3] }}</span>
-
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Rep"
-                                                                                      class="course-label"></span>
-
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnRepeat"
-                                                                                      class="course-repeat"><br> </span>
+                                                                                        {% endfor %}
+                                                                                    {% endif %}
 
 
-                                                                                <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnNoGpa"
-                                                                                      class="course-nogpa"></span>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </div>
-                                                            {% endfor %}
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCorequisites"
+                                                                                          class="course-coreq"></span>
+
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_Antireq"
+                                                                                          class="course-label"><br>Antirequisite(s):</span>
+                                                                                    {% if anti_reqs[outer_loop.index - 1]|length == 0 %}
+                                                                                        <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
+                                                                                              class="course-antireq">
+                                                                                        <a class="link-text">None</a>
+                                                                                    </span>
+                                                                                    {% else %}
+                                                                                        {% for req in anti_reqs[outer_loop.index - 1] %}
+                                                                                            <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnAntirequisites"
+                                                                                                    {% set string = 'href=' ~ url_for('dep_listing', id=req[4], type='courses') ~ "#" ~ req[0] %}
+                                                                                                  class="course-antireq">
+                                                                                                <a {{ string }}
+                                                                                                        class="link-text">
+                                                                                                    {{ req[5] }} {{ req[3] }}{{ '%02d' % req[0]|int }}
+                                                                                                </a>
+                                                                                            </span>
+                                                                                        {% endfor %}
+                                                                                    {% endif %}
+
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Note"
+                                                                                          class="course-label"><br>Recommended year of study to take this course: </span>
+
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnAKA"
+                                                                                          class="course-aka">{{ row[3] }}</span>
+
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_Rep"
+                                                                                          class="course-label"></span>
+
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnRepeat"
+                                                                                          class="course-repeat"><br> </span>
+
+
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnNoGpa"
+                                                                                          class="course-nogpa"></span>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                {% for row in programs %}
+                                                                    <div>
+                                                                        <a name="{{ row[0] }}"></a>
+                                                                        <table cellpadding="2" cellspacing="0" width='100%'
+                                                                               align="center" border="0"
+                                                                               bgcolor='white'>
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th scope="col">
+                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
+                                                                                          class="course-code">{{ row[0] }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                </th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                        </table>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% endif %}
                                                         </div>
                                                     </div>
                                                 </div>

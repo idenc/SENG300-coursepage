@@ -38,17 +38,20 @@ mysql = MySQL(app)
 def home():
     cur = mysql.connection.cursor()
     letter = request.args.get('letter')
-    if letter is None:
-        query = "SELECT dep_name, dep_code FROM department"
-    else:
-        query = "SELECT dep_name, dep_code FROM department WHERE dep_name LIKE '{0}%'".format(letter)
+    query = "SELECT dep_name, dep_code FROM department"
 
     cur.execute(query)
     dept_details = cur.fetchall()
     alphabet = set()
     for c in dept_details:
         alphabet.add(c[0][0].upper())
-    return render_template('index.html', alphabet=sorted(alphabet), depts=dept_details)
+
+    if letter is None:
+        filter = sorted(alphabet)
+    else:
+        filter = [letter]
+
+    return render_template('index.html', alphabet=sorted(alphabet), depts=dept_details, filter=filter)
 
 
 def get_requisites(courses, cur):
@@ -71,18 +74,24 @@ def get_requisites(courses, cur):
     return pre_reqs, anti_reqs
 
 
-@app.route('/courses')
-def courses():
+@app.route('/listing')
+def dep_listing():
     cur = mysql.connection.cursor()
     id = request.args.get('id')
+    type = request.args.get('type')
     cur.execute("SELECT dep_name FROM department WHERE dep_code = %s", id)
     name = cur.fetchone()[0]
 
-    cur.execute("SELECT * FROM course WHERE dep_code = %s GROUP BY crs_year, crs_code", id)
-    courses = cur.fetchall()
-    pre_reqs, anti_reqs = get_requisites(courses, cur)
-
-    return render_template('courses.html', name=name, courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
+    # Get department's course data or program data
+    if type == "courses":
+        cur.execute("SELECT * FROM course WHERE dep_code = %s GROUP BY crs_year, crs_code", id)
+        courses = cur.fetchall()
+        pre_reqs, anti_reqs = get_requisites(courses, cur)
+        return render_template('listing.html', name=name, courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
+    else:
+        cur.execute("SELECT program_name FROM program WHERE program_dep = %s", id)
+        programs = cur.fetchall()
+        return render_template('listing.html', name=name, programs=programs)
 
 
 @app.route('/login', methods=['POST', 'GET'])
