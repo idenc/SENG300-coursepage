@@ -3,6 +3,8 @@ from flask_mysqldb import MySQL
 import yaml
 import json
 import time
+import traceback
+
 
 app = Flask(__name__)
 
@@ -58,7 +60,7 @@ def get_requisites(courses, cur):
     pre_reqs = []
     anti_reqs = []
     for row in courses:
-        query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department ' \
+        query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department '  \
             f'WHERE prerequisite.crs_code = {row[0]}' \
             f' AND prerequisite.crs_requires = course.crs_code AND course.dep_code = department.dep_code'
         cur.execute(query)
@@ -137,6 +139,112 @@ def add_course():
         except Exception as e:
             error = "Problem creating course: " + str(e)
     return render_template('addcourse.html', dep_names=names, error=error)
+
+@app.route('/admin/courses', methods=['POST', 'GET'])
+def admin_course():
+    conn = mysql.connect
+    cur = conn.cursor()
+    if request.method == 'POST':
+
+        if request.args.get("delete"):
+            # This will be finished later
+            date = None
+        elif request.args.get("update"):
+            data = None
+            jsonData = request.get_json()
+            course_id = jsonData["id"]
+            title = jsonData["title"]
+            description = jsonData["description"]
+            year = jsonData["year"]
+            dep_code = jsonData["dep_code"] 
+            pre_reqs = jsonData["pre_reqs"]     # JSON array containing ids of prerequisite
+            anti_reqs = jsonData["anti_reqs"]   # JSON array containing ids of antirequisite
+
+            try:
+                query = f"UPDATE course "\
+                    f"SET crs_title= '{title}', crs_description='{description}', crs_year={year}, dep_code={dep_code} "\
+                    f"WHERE crs_code={course_id}"
+                cur.execute(query)
+                conn.commit()
+
+                update_req(cur, conn, "prerequisite", course_id, pre_reqs)
+                update_req(cur, conn, "antirequisite", course_id, anti_reqs)
+                data = {"status": "success"}
+
+            except Exception as e:
+                traceback.print_exc()
+                data = {"error" : 404}
+
+            finally:
+                return json.dumps(data)
+
+    cur.execute("SELECT * FROM department")
+    deps = cur.fetchall()
+
+    cur.execute("SELECT * FROM course")
+    courses = cur.fetchall()
+    data = []
+    for row in courses:
+        course = {}
+        course["id"] = row[0]
+        course["code"] = str(row[3]) + "%02d" % row[0]
+        course["title"] = row[1]
+        course["description"] = row[2]
+        course["year"] = row[3]
+        course["dep_code"] = row[4]
+
+        query = f'SELECT dep_name FROM department WHERE dep_code={row[4]}'
+        cur.execute(query)
+        temp = cur.fetchone()[0]
+        course["dep_name"] = temp
+
+        query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department ' \
+            f'WHERE prerequisite.crs_code = {row[0]}' \
+            f' AND prerequisite.crs_requires = course.crs_code AND course.dep_code = department.dep_code'
+        cur.execute(query)
+        temp = cur.fetchall()
+        pres = get_codes(temp)
+        course["pre_reqs"] = pres
+
+        query = f'SELECT course.*, department.dep_name FROM course, antirequisite, department ' \
+            f'WHERE antirequisite.crs_code = {row[0]}' \
+            f' AND antirequisite.crs_anti = course.crs_code AND course.dep_code = department.dep_code'
+        cur.execute(query)
+        temp = cur.fetchall()
+        antis = get_codes(temp)
+        course["anti_reqs"] = antis
+        data.append(course)
+
+    return render_template('admin-course.html', data=data, deps=deps)
+
+def update_req(cur, conn, table, course_id, req_ids):
+    col_name = None
+    if table == "prerequisite":
+        col_name = "crs_requires"
+    else:
+        col_name = "crs_anti"
+
+    query = f"DELETE FROM {table} "\
+            f"WHERE crs_code = {course_id}"
+    cur.execute(query)
+    conn.commit()
+
+    for req_id in req_ids:
+        query = f"INSERT INTO {table} "\
+                f"(`crs_code`, `{col_name}`) "\
+                f"VALUES ({course_id}, {req_id})"       
+        cur.execute(query)
+        conn.commit()
+        
+
+def get_codes(courses):
+    codes = []
+    for c in courses:
+        data = {}
+        data["id"] = c[0]
+        data["course_code"] = f"{ c[5] } { c[3] }{ '%02d' % c[0] }"
+        codes.append(data)
+    return codes
 
 
 if __name__ == '__main__':
