@@ -265,8 +265,9 @@
                                                                             <thead>
                                                                             <tr>
                                                                                 <th scope="col">
-                                                                                    <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
-                                                                                          class="course-code">{{ row[0] }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                    <a id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
+                                                                                          class="course-code"
+                                                                                          href="{{ url_for('program', id=row[1], name=row[0]) }}">{{ row[0] }}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                                 </th>
                                                                             </tr>
                                                                             </thead>

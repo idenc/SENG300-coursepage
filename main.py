@@ -80,13 +80,13 @@ def program():
     cur = mysql.connection.cursor()
     program_id = request.args.get('id')
     cur.execute(
-        "SELECT c.* FROM courses AS c, program_requirements AS p WHERE p.program_code = %s"
+        "SELECT c.* FROM course AS c, program_requirements AS p WHERE p.program_code = %s"
         " AND c.crs_code = p.program_crs",
         program_id)
 
     program_requirements = cur.fetchall()
 
-    return render_template('listing.html', program_requirements=program_requirements)
+    return render_template('program.html', program_requirements=program_requirements)
 
 
 @app.route('/listing')
@@ -104,7 +104,7 @@ def dep_listing():
         pre_reqs, anti_reqs = get_requisites(courses, cur)
         return render_template('listing.html', name=name, courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
     else:
-        cur.execute("SELECT program_name FROM program WHERE program_dep = %s", id)
+        cur.execute("SELECT program_name, program_code FROM program WHERE program_dep = %s", id)
         programs = cur.fetchall()
         return render_template('listing.html', name=name, programs=programs)
 
