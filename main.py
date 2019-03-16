@@ -5,7 +5,6 @@ import json
 import time
 import traceback
 
-
 app = Flask(__name__)
 
 # Config environment
@@ -60,7 +59,7 @@ def get_requisites(courses, cur):
     pre_reqs = []
     anti_reqs = []
     for row in courses:
-        query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department '  \
+        query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department ' \
             f'WHERE prerequisite.crs_code = {row[0]}' \
             f' AND prerequisite.crs_requires = course.crs_code AND course.dep_code = department.dep_code'
         cur.execute(query)
@@ -74,6 +73,20 @@ def get_requisites(courses, cur):
         temp = cur.fetchall()
         anti_reqs.append(temp)
     return pre_reqs, anti_reqs
+
+
+@app.route('/program')
+def program():
+    cur = mysql.connection.cursor()
+    program_id = request.args.get('id')
+    cur.execute(
+        "SELECT c.* FROM courses AS c, program_requirements AS p WHERE p.program_code = %s"
+        " AND c.crs_code = p.program_crs",
+        program_id)
+
+    program_requirements = cur.fetchall()
+
+    return render_template('listing.html', program_requirements=program_requirements)
 
 
 @app.route('/listing')
@@ -140,6 +153,7 @@ def add_course():
             error = "Problem creating course: " + str(e)
     return render_template('addcourse.html', dep_names=names, error=error)
 
+
 @app.route('/admin/courses', methods=['POST', 'GET'])
 def admin_course():
     conn = mysql.connect
@@ -156,13 +170,13 @@ def admin_course():
             title = jsonData["title"]
             description = jsonData["description"]
             year = jsonData["year"]
-            dep_code = jsonData["dep_code"] 
-            pre_reqs = jsonData["pre_reqs"]     # JSON array containing ids of prerequisite
-            anti_reqs = jsonData["anti_reqs"]   # JSON array containing ids of antirequisite
+            dep_code = jsonData["dep_code"]
+            pre_reqs = jsonData["pre_reqs"]  # JSON array containing ids of prerequisite
+            anti_reqs = jsonData["anti_reqs"]  # JSON array containing ids of antirequisite
 
             try:
-                query = f"UPDATE course "\
-                    f"SET crs_title= '{title}', crs_description='{description}', crs_year={year}, dep_code={dep_code} "\
+                query = f"UPDATE course " \
+                    f"SET crs_title= '{title}', crs_description='{description}', crs_year={year}, dep_code={dep_code} " \
                     f"WHERE crs_code={course_id}"
                 cur.execute(query)
                 conn.commit()
@@ -173,7 +187,7 @@ def admin_course():
 
             except Exception as e:
                 traceback.print_exc()
-                data = {"error" : 404}
+                data = {"error": 404}
 
             finally:
                 return json.dumps(data)
@@ -217,6 +231,7 @@ def admin_course():
 
     return render_template('admin-course.html', data=data, deps=deps)
 
+
 def update_req(cur, conn, table, course_id, req_ids):
     col_name = None
     if table == "prerequisite":
@@ -224,25 +239,23 @@ def update_req(cur, conn, table, course_id, req_ids):
     else:
         col_name = "crs_anti"
 
-    query = f"DELETE FROM {table} "\
-            f"WHERE crs_code = {course_id}"
+    query = f"DELETE FROM {table} " \
+        f"WHERE crs_code = {course_id}"
     cur.execute(query)
     conn.commit()
 
     for req_id in req_ids:
-        query = f"INSERT INTO {table} "\
-                f"(`crs_code`, `{col_name}`) "\
-                f"VALUES ({course_id}, {req_id})"       
+        query = f"INSERT INTO {table} " \
+            f"(`crs_code`, `{col_name}`) " \
+            f"VALUES ({course_id}, {req_id})"
         cur.execute(query)
         conn.commit()
-        
+
 
 def get_codes(courses):
     codes = []
     for c in courses:
-        data = {}
-        data["id"] = c[0]
-        data["course_code"] = f"{ c[5] } { c[3] }{ '%02d' % c[0] }"
+        data = {"id": c[0], "course_code": f"{c[5]} {c[3]}{'%02d' % c[0]}"}
         codes.append(data)
     return codes
 
