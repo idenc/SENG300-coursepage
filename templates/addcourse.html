@@ -28,16 +28,15 @@
                     <form class="form-signin" action="{{ url_for('add_course') }}" method="post">
 
                         <div class="form-label-group">
-                            <input name="new_course_title" type="text" class="form-control" placeholder="course title"
+                            <input name="new_course_title" type="text" class="form-control" id="course_title"
+                                   placeholder="New Course Title"
                                    required autofocus>
-                            <label for="new_course_title">New Course Title</label>
                         </div>
 
                         <div class="form-label-group">
-                            <input style="height: 20%" name="new_course_description" type="text" class="form-control"
-                                   placeholder="course description"
-                                   required autofocus>
-                            <label for="new_course_description">New Course Description</label>
+                            <textarea style="height: 20%" name="new_course_description" type="text" class="form-control"
+                                      placeholder="New Course Description"
+                                      required autofocus></textarea>
                         </div>
 
                         <label for="new_course_year">
