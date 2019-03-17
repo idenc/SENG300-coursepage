@@ -16,7 +16,7 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="cleartype" content="on">
-    <title>{{ name }}</title>
+    <title>{{ name if name else 'Programs' }}</title>
     <link type="text/css" rel="stylesheet"
           href="../static/css/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css"
           media="all">
@@ -137,7 +137,7 @@
                         <div class="section">
                             <a id="main-content"></a>
                             <h1 class="title" id="page-title" style="color: black">Listing
-                                of {{ 'Courses' if courses else 'Programs' }} in {{ name }}</h1>
+                                of {{ 'Courses' if courses else 'Programs' }} {{ 'in '~name if name else '(All)' }}</h1>
                             <div class="tabs">
                             </div>
                             <div class="region region-content">
@@ -266,8 +266,8 @@
                                                                             <tr>
                                                                                 <th scope="col">
                                                                                     <a id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
-                                                                                          class="course-code"
-                                                                                          href="{{ url_for('program', id=row[1], name=row[0]) }}">{{ row[0] }}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                       class="course-code"
+                                                                                       href="{{ url_for('program', id=row[1]) }}">{{ row[0] }}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                                 </th>
                                                                             </tr>
                                                                             </thead>
@@ -313,7 +313,7 @@
                                                     <div class="views-field views-field-title">
                                                         <span class="field-content">
                                                             <div id="sidebar_link">
-                                                                <h3><a href="">Programs</a></h3>
+                                                                <h3><a href="{{ url_for('dep_listing', type='programs') }}">Programs</a></h3>
                                                             </div>
                                                         </span>
                                                     </div>

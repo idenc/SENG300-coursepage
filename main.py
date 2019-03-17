@@ -78,15 +78,20 @@ def get_requisites(courses, cur):
 @app.route('/program')
 def program():
     cur = mysql.connection.cursor()
+
+    # Get the courses that are required by the program
     program_id = request.args.get('id')
     cur.execute(
         "SELECT c.* FROM course AS c, program_requirements AS p WHERE p.program_code = %s"
         " AND c.crs_code = p.program_crs",
         program_id)
-
     program_requirements = cur.fetchall()
 
-    return render_template('program.html', program_requirements=program_requirements)
+    # Get the program info
+    cur.execute("SELECT * FROM program WHERE program_code = %s", program_id)
+    program_info = cur.fetchall()
+
+    return render_template('program.html', program_requirements=program_requirements, program_info=program_info)
 
 
 @app.route('/listing')
@@ -94,8 +99,10 @@ def dep_listing():
     cur = mysql.connection.cursor()
     id = request.args.get('id')
     type = request.args.get('type')
-    cur.execute("SELECT dep_name FROM department WHERE dep_code = %s", id)
-    name = cur.fetchone()[0]
+    name = ""
+    if id is not None:
+        cur.execute("SELECT dep_name FROM department WHERE dep_code = %s", id)
+        name = cur.fetchone()[0]
 
     # Get department's course data or program data
     if type == "courses":
@@ -104,7 +111,12 @@ def dep_listing():
         pre_reqs, anti_reqs = get_requisites(courses, cur)
         return render_template('listing.html', name=name, courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
     else:
-        cur.execute("SELECT program_name, program_code FROM program WHERE program_dep = %s", id)
+        # Select department's programs
+        if id is not None:
+            cur.execute("SELECT program_name, program_code FROM program WHERE program_dep = %s", id)
+        # Select all programs
+        else:
+            cur.execute("SELECT program_name, program_code FROM program")
         programs = cur.fetchall()
         return render_template('listing.html', name=name, programs=programs)
 

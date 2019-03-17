@@ -16,7 +16,7 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="cleartype" content="on">
-    <title>{{ request.args.get('name') }}</title>
+    <title>{{ program_info[0][1] }}</title>
     <link type="text/css" rel="stylesheet"
           href="../static/css/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css"
           media="all">
@@ -137,7 +137,7 @@
                         <div class="section">
                             <a id="main-content"></a>
                             <h2 class="title" id="page-title" style="color: black">Program Requirements
-                                for {{ request.args.get('name') }}</h2>
+                                for {{ program_info[0][1] }}</h2>
                             <div class="tabs">
                             </div>
                             <div class="region region-content">
@@ -159,20 +159,31 @@
                                                         <div class="field-item even" property="content:encoded">
                                                             <h2>Required courses:</h2>
                                                             <ul>
+                                                                {# Generate a bulleted list of required courses #}
                                                                 {% for row in program_requirements %}
-
                                                                     <li>
-                                                                        <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnCourseList"
-                                                                                {% set string = 'href=' ~ url_for('dep_listing', id=row[4], type='courses') ~ "#" ~ row[0] %}
-                                                                              class="course-list">
+                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnCourseList"
+                                                                            {% set string = 'href=' ~ url_for('dep_listing', id=row[4], type='courses') ~ "#" ~ row[0] %}
+                                                                          class="course-list">
                                                                         <a {{ string }}
                                                                                 class="link-text">
                                                                             {{ row[1] }}
                                                                         </a>
-                                                                        </span>
+                                                                    </span>
                                                                     </li>
-
                                                                 {% endfor %}
+                                                                <li>
+                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnCourseList"
+                                                                          class="course-list">
+                                                                        <a class="link-text">Number of options required: {{ program_info[0][5] }} courses</a>
+                                                                    </span>
+                                                                </li>
+                                                                <li>
+                                                                    <span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnCourseList"
+                                                                          class="course-list">
+                                                                        <a class="link-text">Length of Program: {{ program_info[0][4] }} years</a>
+                                                                    </span>
+                                                                </li>
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -212,7 +223,7 @@
                                                     <div class="views-field views-field-title">
                                                         <span class="field-content">
                                                             <div id="sidebar_link">
-                                                                <h3><a href="">Programs</a></h3>
+                                                                <h3><a href="{{ url_for('dep_listing', type='programs') }}">Programs</a></h3>
                                                             </div>
                                                         </span>
                                                     </div>
