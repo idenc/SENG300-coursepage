@@ -181,8 +181,10 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     <a>{{ row[0] }}</a>
-                                                                                    <a href="{{ url_for('dep_listing', id=row[1], type='courses') }}" style="float: right">Courses</a>
-                                                                                    <a href="{{ url_for('dep_listing', id=row[1], type='programs') }}" style="float: right; margin-right: 2%;">Programs</a>
+                                                                                    <a href="{{ url_for('dep_listing', id=row[1], type='courses') }}"
+                                                                                       style="float: right">Courses</a>
+                                                                                    <a href="{{ url_for('dep_listing', id=row[1], type='programs') }}"
+                                                                                       style="float: right; margin-right: 2%;">Programs</a>
                                                                                 </td>
                                                                             </tr>
                                                                         {% endif %}
