@@ -160,7 +160,17 @@
                                                             <h2>Required courses:</h2>
                                                             <ul>
                                                                 {% for row in program_requirements %}
-                                                                    <li><a>{{ row[1] }}</a></li>
+																
+                                                                    <li><a>
+																	<span id="ctl00_ctl00_pageContent_ctl21_ctl02_cnCourseList"
+																			{% set string = 'href=' ~ url_for('dep_listing', id=request.args.get('id'), type='courses') ~ "#" ~ row[0] %}
+																		  class="course-list">
+																	<a {{ string }}
+																			class="link-text">
+																		{{row[1]}}
+																	</a>
+																	</a></li>
+																	
                                                                 {% endfor %}
                                                             </ul>
                                                         </div>
