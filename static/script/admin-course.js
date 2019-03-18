@@ -74,12 +74,16 @@ $(function(){
     
     });
 
-    // Event for delete button
+    // Save the current course if user clicks delete
     $(".courseDelete").on("click", function(){
-        var course = JSON.parse($(this).parents("tr").attr("data").replace(/\'/g, '\"'));
+        $("#errorDelete").text("");
+        var data = $(this).parents("tr").attr("data").replace(/\'/g, '\"');
+        var course = JSON.parse(data);
+        currentCourse = course;
     });
     
 
+    // Update changes event
     $("#saveChanges").click(function(){
         $("#loading").modal("show");
         // Process req and anti 
@@ -117,6 +121,34 @@ $(function(){
                 $("#loading").modal("hide");
             },
         })
+    });
+
+    // User accepts deleting the course
+    $("#acceptDeleteCourse").click(function(){
+        $("#loading").modal("show");
+        if (currentCourse != null){
+            $.ajax({
+                url: deleteURL,
+                data: JSON.stringify({"id" : currentCourse.id}),
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                success: function(data){
+                    if (data.error){
+                        $("#errorDelete").text("Could not delete. Try again. Error: " + data.error)
+                        $("#loading").modal("hide");
+                    } else {
+                        $("#loading").modal("hide");
+                        $("#deleteCourse").modal("hide");
+                        window.location.href = mainURL;
+                    }
+                    
+                },
+                error: function( errorThrown ){
+                    $("#errorDelete").text("Could not delete. Try again. Error: " + errorThrown)
+                    $("#loading").modal("hide");
+                },
+            })
+        }
     });
 
     $(document).on('show.bs.modal', '.modal', function (event) {

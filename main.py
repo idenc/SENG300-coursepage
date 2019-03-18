@@ -165,17 +165,50 @@ def add_course():
             error = "Problem creating course: " + str(e)
     return render_template('addcourse.html', dep_names=names, error=error)
 
-
+## APIs for admin-course page ##
 @app.route('/admin/courses', methods=['POST', 'GET'])
 def admin_course():
     conn = mysql.connect
     cur = conn.cursor()
+    error = None
     if request.method == 'POST':
+        
+        if request.args.get("add"):                 # User adds a new course
+            cur.execute("SELECT * FROM department")
+            names = cur.fetchall()
+            error = None
+            course_title = request.form["new_course_title"]
+            course_title = request.form["new_course_title"]
+            course_description = request.form["new_course_description"]
+            course_year = request.form["new_course_year"]
+            course_department = request.form["new_course_dep"]
+            try:
+                query = f"INSERT INTO course (`crs_title`, `crs_description`, `crs_year`, `dep_code`)" \
+                        f" VALUES ('{course_title}', '{course_description}', {course_year}, {course_department})"
+                print(query)
+                cur.execute(query)
+                conn.commit()
+                error = "Success!"
+            except Exception as e:
+                error = "Problem creating course: " + str(e)                  
+    
+        elif request.args.get("delete"):            # User deletes the course
+            data = None
+            jsonData = request.get_json()
+            course_id = jsonData["id"]
+            try: 
+                delete_course_query(conn, cur, "antirequisite", "crs_code", course_id)
+                delete_course_query(conn, cur, "prerequisite", "crs_code", course_id)
+                delete_course_query(conn, cur, "program_requirements", "program_crs", course_id)
+                delete_course_query(conn, cur, "course", "crs_code", course_id)
+                data = {"success": "true"}
+            except Exception as e:
+                traceback.print_exc()
+                data = {"error": "Please try again."}
+            finally:
+                return json.dumps(data)
 
-        if request.args.get("delete"):
-            # This will be finished later
-            date = None
-        elif request.args.get("update"):
+        elif request.args.get("update"):            # User updates the course
             data = None
             jsonData = request.get_json()
             course_id = jsonData["id"]
@@ -183,8 +216,8 @@ def admin_course():
             description = jsonData["description"]
             year = jsonData["year"]
             dep_code = jsonData["dep_code"]
-            pre_reqs = jsonData["pre_reqs"]  # JSON array containing ids of prerequisite
-            anti_reqs = jsonData["anti_reqs"]  # JSON array containing ids of antirequisite
+            pre_reqs = jsonData["pre_reqs"]         # JSON array containing ids of prerequisite
+            anti_reqs = jsonData["anti_reqs"]       # JSON array containing ids of antirequisite
 
             try:
                 query = f"UPDATE course " \
@@ -200,7 +233,6 @@ def admin_course():
             except Exception as e:
                 traceback.print_exc()
                 data = {"error": 404}
-
             finally:
                 return json.dumps(data)
 
@@ -241,9 +273,16 @@ def admin_course():
         course["anti_reqs"] = antis
         data.append(course)
 
-    return render_template('admin-course.html', data=data, deps=deps)
+    return render_template('admin-course.html', data=data, deps=deps, error=error)
 
+## Delete a record in the given table ##
+def delete_course_query(conn, cur, table, para, id):
+    query = f"DELETE FROM {table} " \
+        f"WHERE `{para}` = {id}"
+    cur.execute(query)
+    conn.commit()
 
+## Update requirement ## 
 def update_req(cur, conn, table, course_id, req_ids):
     col_name = None
     if table == "prerequisite":
@@ -251,10 +290,7 @@ def update_req(cur, conn, table, course_id, req_ids):
     else:
         col_name = "crs_anti"
 
-    query = f"DELETE FROM {table} " \
-        f"WHERE crs_code = {course_id}"
-    cur.execute(query)
-    conn.commit()
+    delete_course_query(cur, table, "crs_code", course_id)
 
     for req_id in req_ids:
         query = f"INSERT INTO {table} " \
@@ -263,7 +299,7 @@ def update_req(cur, conn, table, course_id, req_ids):
         cur.execute(query)
         conn.commit()
 
-
+## Get the course code along with its id in JSON ##
 def get_codes(courses):
     codes = []
     for c in courses:

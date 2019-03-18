@@ -13,14 +13,14 @@
     <link rel="icon" type="image/png" sizes="16x16">
     <title>Courses</title>
     <!-- Tags input css -->
-
     <!-- Bootstrap Core CSS -->
     <link href="../static/plugins/boostrap/boostrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="../static/css/admin.css" rel="stylesheet">
     <!-- You can change the theme colors from here -->
     <link href="../static/css/blue.css" id="theme" rel="stylesheet">
-
+    <link rel="stylesheet" href="../static/css/nice-select.css"/>
+    <link rel="stylesheet" href="../static/css/admin-course.css"/>
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
     <link href="../static/plugins/tagit/jquery.targit.css" rel="stylesheet" type="text/css">
 
@@ -144,6 +144,23 @@
                 <div class="row">
                     <!-- column -->
                     <div class="col-lg-12">
+                        
+                        <div class="row" style="margin-bottom: 15px">
+                            
+                            <!-- <div class="col-lg-3">
+                                <div class="input-group custom-search-form">
+                                    <input type="text" class="form-control" placeholder="Find courses">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-secondary mdi mdi-file-find" style="font-size: 20px" type="button"></button>
+                                    </span>
+                                    
+                                </div>
+                            </div> -->
+
+                            <div class="col-lg-3">
+                                <button data-toggle="modal" data-target="#addCourse" class="btn btn-outline-info hidden-sm-down" style="font-size: 18px; font-family: 'Poppins', sans-serif" type="button">Add course</button>
+                            </div>
+                        </div>
                         <div class="card">
                             <div class="card-block">
                                 <h4 class="card-title">University of Calgary's Courses</h4>
@@ -167,8 +184,8 @@
                                                     <td>{{ d['code'] }}</td>
                                                     <td>{{ d['title'] }}</td>
                                                     <td>
-                                                        <i data-toggle="modal" style="cursor: pointer; color:green" class="courseEdit mdi mdi-grease-pencil"></i>
-                                                        <i style="display:none; cursor: pointer; color: red" class="courseDelete mdi mdi-delete"></i>
+                                                        <button data-toggle="modal" class="courseEdit btn btn-primary">Edit</button>
+                                                        <button data-toggle="modal" data-target="#deleteCourse" class="courseDelete btn btn-danger">Delete</button>
                                                     </td>
                                                 </tr>
                                                 
@@ -199,7 +216,56 @@
         <!-- End Page wrapper  -->
         <!-- ============================================================== -->
     </div>
-    <!-- Modal -->
+    <!-- Add course -->
+    <div id="addCourse" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                
+                    <div class="card card-signin my-5">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">Add a course</h5>
+                                <form class="form-signin" action="/admin/courses?add=true" method="post">
+            
+                                    <div class="form-label-group">
+                                        <input name="new_course_title" type="text" class="form-control" id="course_title" placeholder="New Course Title" required="" autofocus="">
+                                    </div>
+            
+                                    <div class="form-label-group">
+                                        <textarea style="height: 20%" name="new_course_description" type="text" class="form-control" placeholder="New Course Description" required="" autofocus=""></textarea>
+                                    </div>
+            
+                                    <label for="new_course_year">
+                                        <select name="new_course_year" style="display: none;">
+                                            <option selected="" disabled="">New Course Year</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                        </select><div class="nice-select" tabindex="0"><span class="current">New Course Year</span><ul class="list"><li data-value="New Course Year" class="option selected disabled">New Course Year</li><li data-value="1" class="option">1</li><li data-value="2" class="option">2</li><li data-value="3" class="option">3</li><li data-value="4" class="option">4</li></ul></div>
+                                    </label>
+            
+                                    <label for="new_course_dep">
+                                        <select name="new_course_dep">
+                                            <option selected disabled>New Course Department</option>
+                                            {% for name in deps %}
+                                            <option value="{{ name[0] }}">{{ name[1] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                    {% if error %}
+                                    <p>{{ error }}</p>
+                                    {% endif %}
+                                    <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
+                                </form>
+                                <div id="declineSession"></div>
+                            </div>
+                        </div>
+            </div>
+          </div>
+        </div>
+
+
+    <!-- Edit course -->
     <div id="courseDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -273,6 +339,31 @@
       </div>
     </div>
 
+    <!-- Delete course -->
+    <div id="deleteCourse" class="modal fade" tabindex="-1" role="dialog"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Confirm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this course ? 
+                    <div id="errorDelete" style="color: red"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="acceptDeleteCourse" type="button" class="btn btn-primary">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+
     <!--- Loading modal -->
     <div id="loading" class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-sm">
@@ -282,18 +373,7 @@
         </div>
     </div>
     <style>
-    #loading  .modal-dialog{
-        display: table;
-        position: relative;
-        margin: 0 auto;
-        top: calc(50% - 24px);
     
-    }
-  
-    #loading .modal-dialog .modal-content{
-        background-color: transparent;
-        border: none;
-    }
     </style>
     
     <!-- ============================================================== -->
@@ -323,6 +403,12 @@
     <!--Tags input -->
     <script src="../static/plugins/tagit/tagit.min.js"></script>
     <script src="../static/script/admin.custom.min.js"></script> 
+    <script src="../static/script/jquery.nice-select.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('select').niceSelect();
+        });
+    </script>
 </body>
 
 </html>
