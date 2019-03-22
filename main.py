@@ -123,6 +123,7 @@ def dep_listing():
     """
     cur = mysql.connection.cursor()
 
+    # Handle search request
     if request.method == 'POST':
         return search_courses(request.form)
 
@@ -163,11 +164,14 @@ def search_courses(search):
     cur = mysql.connection.cursor()
     search_string = search['search']
 
-    cur.execute("SELECT * FROM course WHERE crs_title LIKE %s OR crs_code LIKE %s GROUP BY crs_year, crs_code",
+    # Get courses containing searched value and their department name
+    cur.execute("SELECT c.crs_code, c.crs_title, c.crs_description, c.crs_year, d.dep_name"
+                " FROM course AS c, department AS d WHERE (c.crs_title LIKE %s OR"
+                " c.crs_code LIKE %s) AND c.dep_code = d.dep_code GROUP BY c.crs_year, c.crs_code, d.dep_name",
                 [("%" + str(search_string) + "%"), ("%" + str(search_string) + "%")])
     courses = cur.fetchall()
     pre_reqs, anti_reqs = get_requisites(courses, cur)
-    return render_template('listing.html', name="search", courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
+    return render_template('listing.html', name="Search", courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
 
 
 @app.route('/login', methods=['POST', 'GET'])
