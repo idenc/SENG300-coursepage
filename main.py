@@ -115,13 +115,17 @@ def program():
     return render_template('program.html', program_requirements=program_requirements, program_info=program_info)
 
 
-@app.route('/listing')
+@app.route('/listing', methods=['GET', 'POST'])
 def dep_listing():
     """
     Dual purpose page to display courses or programs for a department
     :return: A page listing courses or programs
     """
     cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        return search_courses(request.form)
+
     # Get department id
     id = request.args.get('id')
     # Get which type to list
@@ -148,6 +152,22 @@ def dep_listing():
             cur.execute("SELECT program_name, program_code FROM program")
         programs = cur.fetchall()
         return render_template('listing.html', name=name, programs=programs)
+
+
+def search_courses(search):
+    """
+    Handles searching for courses
+    :param search: The form data for the search
+    :return: Page with search results
+    """
+    cur = mysql.connection.cursor()
+    search_string = search['search']
+
+    cur.execute("SELECT * FROM course WHERE crs_title LIKE %s OR crs_code LIKE %s GROUP BY crs_year, crs_code",
+                [("%" + str(search_string) + "%"), ("%" + str(search_string) + "%")])
+    courses = cur.fetchall()
+    pre_reqs, anti_reqs = get_requisites(courses, cur)
+    return render_template('listing.html', name="search", courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
 
 
 @app.route('/login', methods=['POST', 'GET'])

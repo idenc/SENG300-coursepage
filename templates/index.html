@@ -259,7 +259,7 @@
                                 <div class="view view-course-information-by-course-code view-id-course_information_by_course_code view-display-id-block course-search view-dom-id-d2d78936f9739210589ef4abb219ac2c jquery-once-2-processed">
 
                                     <div class="view-filters">
-                                        <form action="" method="get"
+                                        <form action="{{ url_for('dep_listing') }}" method="post"
                                               id="views-exposed-form-course-information-by-course-code-block"
                                               accept-charset="UTF-8" class="jquery-once-2-processed">
                                             <div>
@@ -272,7 +272,7 @@
                                                             <div class="views-widget">
                                                                 <div class="form-item form-type-textfield form-item-title">
                                                                     <input type="text" id="edit-title"
-                                                                           name="title" value="" size="30"
+                                                                           name="search" value="" size="30"
                                                                            maxlength="128" class="form-text">
                                                                 </div>
                                                             </div>
