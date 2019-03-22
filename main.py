@@ -37,16 +37,23 @@ mysql = MySQL(app)
 
 @app.route('/')
 def home():
+    """
+    Displays Departments sorted alphabetically, can be filtered by letter
+    :return: Main department page
+    """
     cur = mysql.connection.cursor()
+    # Get letter filter if it exists
     letter = request.args.get('letter')
     query = "SELECT dep_name, dep_code FROM department"
 
     cur.execute(query)
     dept_details = cur.fetchall()
     alphabet = set()
+    # Populate a list with letters that departments start with
     for c in dept_details:
         alphabet.add(c[0][0].upper())
 
+    # Check if there is a filter
     if letter is None:
         filter = sorted(alphabet)
     else:
@@ -56,9 +63,17 @@ def home():
 
 
 def get_requisites(courses, cur):
+    """
+    Gets prerequisites and antirequisites for a department's courses
+    :param courses: A list of courses for which to get their requisites
+    :param cur: mysql session
+    :return: pre_reqs and anti_reqs which are lists containing the respective requisites
+    """
     pre_reqs = []
     anti_reqs = []
+    # For each course
     for row in courses:
+        # Grab prerequisites
         query = f'SELECT course.*, department.dep_name FROM course, prerequisite, department ' \
             f'WHERE prerequisite.crs_code = {row[0]}' \
             f' AND prerequisite.crs_requires = course.crs_code AND course.dep_code = department.dep_code'
@@ -66,17 +81,23 @@ def get_requisites(courses, cur):
         temp = cur.fetchall()
         pre_reqs.append(temp)
 
+        # Grab antirequisites
         query = f'SELECT course.*, department.dep_name FROM course, antirequisite, department ' \
             f'WHERE antirequisite.crs_code = {row[0]}' \
             f' AND antirequisite.crs_anti = course.crs_code AND course.dep_code = department.dep_code'
         cur.execute(query)
         temp = cur.fetchall()
         anti_reqs.append(temp)
+
     return pre_reqs, anti_reqs
 
 
 @app.route('/program')
 def program():
+    """
+    Get the requirements for a specific program
+    :return: Program requirements page for a specific program
+    """
     cur = mysql.connection.cursor()
 
     # Get the courses that are required by the program
@@ -96,10 +117,18 @@ def program():
 
 @app.route('/listing')
 def dep_listing():
+    """
+    Dual purpose page to display courses or programs for a department
+    :return: A page listing courses or programs
+    """
     cur = mysql.connection.cursor()
+    # Get department id
     id = request.args.get('id')
+    # Get which type to list
     type = request.args.get('type')
     name = ""
+
+    # Whether to filter by department
     if id is not None:
         cur.execute("SELECT dep_name FROM department WHERE dep_code = %s", id)
         name = cur.fetchone()[0]
@@ -123,10 +152,15 @@ def dep_listing():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    """
+    Handles login for admin
+    :return: Session with admin now logged in
+    """
     if request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
         cur = mysql.connection.cursor()
+        # Get user
         cur.execute("SELECT COUNT(*) FROM user WHERE username = '{0}' AND password = '{1}'".format(username, password))
         if cur.fetchone()[0] != 0:
             data = {
@@ -144,36 +178,50 @@ def login():
 
 @app.route('/addcourse', methods=['POST', 'GET'])
 def add_course():
+    """
+    Handles page for inserting a new course into the database
+    :return: Add course page with a success/error message
+    """
     conn = mysql.connect
     cur = conn.cursor()
     cur.execute("SELECT * FROM department")
     names = cur.fetchall()
     error = None
+
+    # Handle submit
     if request.method == 'POST':
+        # Grab user info
         course_title = request.form["new_course_title"]
         course_description = request.form["new_course_description"]
         course_year = request.form["new_course_year"]
         course_department = request.form["new_course_dep"]
         try:
+            # Insert new course into DB
             query = f"INSERT INTO course (`crs_title`, `crs_description`, `crs_year`, `dep_code`)" \
                 f" VALUES ('{course_title}', '{course_description}', {course_year}, {course_department})"
             print(query)
             cur.execute(query)
             conn.commit()
             error = "Success!"
+        # Handle error
         except Exception as e:
             error = "Problem creating course: " + str(e)
     return render_template('addcourse.html', dep_names=names, error=error)
 
-## APIs for admin-course page ##
+
+# APIs for admin-course page
 @app.route('/admin/courses', methods=['POST', 'GET'])
 def admin_course():
+    """
+    Handles admin dashboard functionality
+    :return: Admin page
+    """
     conn = mysql.connect
     cur = conn.cursor()
     error = None
     if request.method == 'POST':
-        
-        if request.args.get("add"):                 # User adds a new course
+
+        if request.args.get("add"):  # User adds a new course
             cur.execute("SELECT * FROM department")
             names = cur.fetchall()
             error = None
@@ -184,19 +232,19 @@ def admin_course():
             course_department = request.form["new_course_dep"]
             try:
                 query = f"INSERT INTO course (`crs_title`, `crs_description`, `crs_year`, `dep_code`)" \
-                        f" VALUES ('{course_title}', '{course_description}', {course_year}, {course_department})"
+                    f" VALUES ('{course_title}', '{course_description}', {course_year}, {course_department})"
                 print(query)
                 cur.execute(query)
                 conn.commit()
                 error = "Success!"
             except Exception as e:
-                error = "Problem creating course: " + str(e)                  
-    
-        elif request.args.get("delete"):            # User deletes the course
+                error = "Problem creating course: " + str(e)
+
+        elif request.args.get("delete"):  # User deletes the course
             data = None
             jsonData = request.get_json()
             course_id = jsonData["id"]
-            try: 
+            try:
                 delete_course_query(conn, cur, "antirequisite", "crs_code", course_id)
                 delete_course_query(conn, cur, "prerequisite", "crs_code", course_id)
                 delete_course_query(conn, cur, "program_requirements", "program_crs", course_id)
@@ -208,7 +256,7 @@ def admin_course():
             finally:
                 return json.dumps(data)
 
-        elif request.args.get("update"):            # User updates the course
+        elif request.args.get("update"):  # User updates the course
             data = None
             jsonData = request.get_json()
             course_id = jsonData["id"]
@@ -216,8 +264,8 @@ def admin_course():
             description = jsonData["description"]
             year = jsonData["year"]
             dep_code = jsonData["dep_code"]
-            pre_reqs = jsonData["pre_reqs"]         # JSON array containing ids of prerequisite
-            anti_reqs = jsonData["anti_reqs"]       # JSON array containing ids of antirequisite
+            pre_reqs = jsonData["pre_reqs"]  # JSON array containing ids of prerequisite
+            anti_reqs = jsonData["anti_reqs"]  # JSON array containing ids of antirequisite
 
             try:
                 query = f"UPDATE course " \
@@ -226,8 +274,8 @@ def admin_course():
                 cur.execute(query)
                 conn.commit()
 
-                update_req(cur, conn, "prerequisite", course_id, pre_reqs)
-                update_req(cur, conn, "antirequisite", course_id, anti_reqs)
+                update_req(conn, cur, "prerequisite", course_id, pre_reqs)
+                update_req(conn, cur, "antirequisite", course_id, anti_reqs)
                 data = {"status": "success"}
 
             except Exception as e:
@@ -275,15 +323,33 @@ def admin_course():
 
     return render_template('admin-course.html', data=data, deps=deps, error=error)
 
-## Delete a record in the given table ##
+
 def delete_course_query(conn, cur, table, para, id):
+    """
+    Delete a given element from a table in DB
+    :param conn: MySQL connection
+    :param cur: cursor for MySQL connection
+    :param table: Which table to delete from
+    :param para: parameter for identification
+    :param id: Id for element to delete
+    :return:
+    """
     query = f"DELETE FROM {table} " \
         f"WHERE `{para}` = {id}"
     cur.execute(query)
     conn.commit()
 
-## Update requirement ## 
-def update_req(cur, conn, table, course_id, req_ids):
+
+def update_req(conn, cur, table, course_id, req_ids):
+    """
+    Update a given element from a table in DB
+    :param conn: MySQL connection
+    :param cur: cursor for MySQL connection
+    :param table: Which table to update
+    :param course_id: What course to delete
+    :param req_ids:
+    :return:
+    """
     col_name = None
     if table == "prerequisite":
         col_name = "crs_requires"
@@ -299,8 +365,13 @@ def update_req(cur, conn, table, course_id, req_ids):
         cur.execute(query)
         conn.commit()
 
-## Get the course code along with its id in JSON ##
+
 def get_codes(courses):
+    """
+    Get the course code along with its id in JSON format
+    :param courses:
+    :return:
+    """
     codes = []
     for c in courses:
         data = {"id": c[0], "course_code": f"{c[5]} {c[3]}{'%02d' % c[0]}"}
@@ -308,5 +379,6 @@ def get_codes(courses):
     return codes
 
 
+# Main entry point
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
