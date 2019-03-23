@@ -3,7 +3,7 @@
  */
 
 const name = "UCalgary";
-const loginButton = '<button class="btn btn-primary" onclick="goToLogin()" type="submit">Login</button>';
+const loginButton = '<button class="btn btn-primary" onclick="goToLogin()" type="submit" style="background-color: #0070b3">Login</button>';
 const popUp =
     '<div class="modal fade" id="logoutAlert" tabindex="-1" data-backdrop="false" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">' +
     '  <div class="modal-dialog" role="document">' +
@@ -54,7 +54,6 @@ function getNavbar() {
             '        </a>' +
             '        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">' +
             '          <a class="dropdown-item" href="/admin/courses">Dashboard</a>' +
-            '          <a class="dropdown-item" href="/addcourse">Add course</a>' +
             '          <a class="dropdown-item" href="/logout" data-toggle="modal" data-target="#logoutAlert" style="color: red">Log out</a>' +
             '        </div>' +
             '      </li>' +
