@@ -52,7 +52,7 @@ function getNavbar() {
             getUsername() +
             '        </a>' +
             '        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">' +
-            '          <a class="dropdown-item" href="/admin/courses">Dashboard</a>' +
+            '          <a class="dropdown-item" href="/admin/programs">Dashboard</a>' +
             '          <a class="dropdown-item" href="/logout" data-toggle="modal" data-target="#logoutAlert" style="color: red">Log out</a>' +
             '        </div>' +
             '      </li>' +

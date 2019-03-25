@@ -235,13 +235,14 @@ def add_course():
 @app.route('/admin/programs', methods = ['POST', 'GET'])
 def admin_program():
     """
-    Handles admin dashboard functionality
+    Handles admin program page's functionality
     :return: Admin program page
     """
     conn = mysql.connect
     cur = conn.cursor()
     if request.method == 'POST':
-        if request.args.get("add"):                 # User adds a new program
+        # User adds a new program
+        if request.args.get("add"):           
             cur.execute("SELECT * FROM department")
             names = cur.fetchall()
             error = None
@@ -251,6 +252,7 @@ def admin_program():
             program_dep = request.form["new_program_dep"]
             default_type = "BSc"
             try:
+                # Insert a new record into program table
                 query = f"INSERT INTO program (`program_name`, `program_dep`, `program_type`, `program_length`, `num_options`)" \
                         f" VALUES ('{program_title}', {program_dep}, '{default_type}', {program_length}, {program_options})"
                 print(query)
@@ -258,23 +260,26 @@ def admin_program():
                 conn.commit()
                 error = "Success!"
             except Exception as e:
+                # Handle exception
                 error = "Problem creating course: " + str(e) 
-
-        elif request.args.get("delete"):            # User deletes the program
+        # User deletes the program
+        elif request.args.get("delete"):
             data = None
             jsonData = request.get_json()
             program_id = jsonData["id"]
             try: 
+                # Delete program's id from requirements table and program table
                 delete_course_query(conn, cur, "program_requirements", "program_code", program_id)
                 delete_course_query(conn, cur, "program", "program_code", program_id)
                 data = {"success": "true"}
             except Exception as e:
+                # Handle exception
                 traceback.print_exc()
                 data = {"error": "Please try again."}
             finally:
                 return json.dumps(data)     
-
-        elif request.args.get("update"):              # User updates the program
+        # User updates the program
+        elif request.args.get("update"):
             data = None
             jsonData = request.get_json()
             program_code = jsonData["code"]
@@ -282,7 +287,7 @@ def admin_program():
             program_length = jsonData["length"]
             dep_code = jsonData["dep_code"]
             num_options = jsonData["num_options"]
-            courses = jsonData["courses"]         # JSON array containing id of courses
+            courses = jsonData["courses"]  
 
             try:
                 # Update program's info
@@ -295,9 +300,11 @@ def admin_program():
                 update_req(cur, conn, "program_requirements", program_code, courses)
                 data = {"status": "success"}
             except Exception as e:
+                # Handle exception
                 traceback.print_exc()
                 data = {"error": 404}
             finally:
+                # Return json data
                 return json.dumps(data)
 
     cur.execute("SELECT * FROM department")
@@ -307,6 +314,7 @@ def admin_program():
     cur.execute("SELECT * FROM program")
     courses = cur.fetchall()
     data = []
+    # Retrieve program's info and it to data array
     for row in courses:
         program = {}
         program["code"] = row[0]
@@ -342,8 +350,8 @@ def admin_course():
     cur = conn.cursor()
     error = None
     if request.method == 'POST':
-
-        if request.args.get("add"):         # User adds a new course
+        # User adds a new course
+        if request.args.get("add"):       
             cur.execute("SELECT * FROM department")
             names = cur.fetchall()
             error = None
@@ -352,6 +360,7 @@ def admin_course():
             course_year = request.form["new_course_year"]
             course_department = request.form["new_course_dep"]
             try:
+                # Insert new record into table course
                 query = f"INSERT INTO course (`crs_title`, `crs_description`, `crs_year`, `dep_code`)" \
                     f" VALUES ('{course_title}', '{course_description}', {course_year}, {course_department})"
                 print(query)
@@ -359,25 +368,30 @@ def admin_course():
                 conn.commit()
                 error = "Success!"
             except Exception as e:
+                # Handle exception
                 error = "Problem creating course: " + str(e)
-
-        elif request.args.get("delete"):  # User deletes the course
+        # User deletes the course
+        elif request.args.get("delete"): 
             data = None
             jsonData = request.get_json()
             course_id = jsonData["id"]
             try:
+                # Delete id along with its reference in other tables
                 delete_course_query(conn, cur, "antirequisite", "crs_code", course_id)
                 delete_course_query(conn, cur, "prerequisite", "crs_code", course_id)
                 delete_course_query(conn, cur, "program_requirements", "program_crs", course_id)
                 delete_course_query(conn, cur, "course", "crs_code", course_id)
                 data = {"success": "true"}
             except Exception as e:
+                # Handle exception
                 traceback.print_exc()
                 data = {"error": "Please try again."}
             finally:
+                # Return json data
                 return json.dumps(data)
 
-        elif request.args.get("update"):  # User updates the course
+        # User updates the course
+        elif request.args.get("update"):
             data = None
             jsonData = request.get_json()
             course_id = jsonData["id"]
@@ -385,24 +399,26 @@ def admin_course():
             description = jsonData["description"]
             year = jsonData["year"]
             dep_code = jsonData["dep_code"]
-            pre_reqs = jsonData["pre_reqs"]  # JSON array containing ids of prerequisite
-            anti_reqs = jsonData["anti_reqs"]  # JSON array containing ids of antirequisite
+            pre_reqs = jsonData["pre_reqs"]     # JSON array containing ids of prerequisite
+            anti_reqs = jsonData["anti_reqs"]   # JSON array containing ids of antirequisite
 
             try:
+                # Update the record
                 query = f"UPDATE course " \
                     f"SET crs_title= '{title}', crs_description='{description}', crs_year={year}, dep_code={dep_code} " \
                     f"WHERE crs_code={course_id}"
                 cur.execute(query)
                 conn.commit()
-
                 update_req(conn, cur, "prerequisite", course_id, pre_reqs)
                 update_req(conn, cur, "antirequisite", course_id, anti_reqs)
                 data = {"status": "success"}
 
             except Exception as e:
+                # Handle exception
                 traceback.print_exc()
                 data = {"error": 404}
             finally:
+                # Return json
                 return json.dumps(data)
 
     cur.execute("SELECT * FROM department")
@@ -411,6 +427,7 @@ def admin_course():
     cur.execute("SELECT * FROM course")
     courses = cur.fetchall()
     data = []
+    # Retrieve course's info and add it to data array
     for row in courses:
         course = {}
         course["id"] = row[0]
