@@ -117,7 +117,7 @@
 
                         <div id="site-name">
                             <strong>
-                                <a href="{{ url_for('home') }}" title="Home" rel="home"><span>Course Calender</span></a>
+                                <a href="{{ url_for('home') }}" title="Home" rel="home"><span>Course Calendar</span></a>
                             </strong>
                         </div>
 
@@ -170,7 +170,7 @@
                                                                             <tr>
                                                                                 <th scope="col">
                                                                                         <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCourse"
-                                                                                              class="course-code">{{ name }} </span>
+                                                                                              class="course-code">{{ name if (name != 'Search') else row[4] }} </span>
                                                                                     <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnCode"
                                                                                           class="course-code">{{ row[3] }}{{ '%02d' % row[0]|int }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                                     <span id="ctl00_ctl00_pageContent_ctl03_ctl02_cnTitle"
@@ -318,15 +318,6 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div class="views-row views-row-3 views-row-odd">
-                                                    <div class="views-field views-field-title">
-                                                        <span class="field-content">
-                                                            <div id="sidebar_link">
-                                                                <h3><a href="">Course Search</a>&nbsp;</h3>
-                                                            </div>
-                                                        </span>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -349,16 +340,13 @@
                                                         <div id="edit-title-wrapper"
                                                              class="views-exposed-widget views-widget-filter-title">
                                                             <label for="edit-title">
-                                                                Course Description by Course Code </label>
+                                                                Search by Course title or Course code</label>
                                                             <div class="views-widget">
                                                                 <div class="form-item form-type-textfield form-item-title">
                                                                     <input type="text" id="edit-title"
-                                                                           name="title" value="" size="30"
+                                                                           name="search" value="" size="30"
                                                                            maxlength="128" class="form-text">
                                                                 </div>
-                                                            </div>
-                                                            <div class="description">
-                                                                Do not use spaces within course code values
                                                             </div>
                                                         </div>
                                                         <div class="views-exposed-widget views-submit-button">

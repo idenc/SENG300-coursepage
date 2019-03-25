@@ -119,7 +119,7 @@
 
                         <div id="site-name">
                             <strong>
-                                <a href="{{ url_for('home') }}" title="Home" rel="home"><span>Course Calender</span></a>
+                                <a href="{{ url_for('home') }}" title="Home" rel="home"><span>Course Calendar</span></a>
                             </strong>
                         </div>
 
@@ -237,15 +237,6 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div class="views-row views-row-3 views-row-odd">
-                                                    <div class="views-field views-field-title">
-                                                        <span class="field-content">
-                                                            <div id="sidebar_link">
-                                                                <h3><a href="">Course Search</a>&nbsp;</h3>
-                                                            </div>
-                                                        </span>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -259,7 +250,7 @@
                                 <div class="view view-course-information-by-course-code view-id-course_information_by_course_code view-display-id-block course-search view-dom-id-d2d78936f9739210589ef4abb219ac2c jquery-once-2-processed">
 
                                     <div class="view-filters">
-                                        <form action="" method="get"
+                                        <form action="{{ url_for('dep_listing') }}" method="post"
                                               id="views-exposed-form-course-information-by-course-code-block"
                                               accept-charset="UTF-8" class="jquery-once-2-processed">
                                             <div>
@@ -268,16 +259,13 @@
                                                         <div id="edit-title-wrapper"
                                                              class="views-exposed-widget views-widget-filter-title">
                                                             <label for="edit-title">
-                                                                Course Description by Course Code </label>
+                                                                Search by Course title or Course code</label>
                                                             <div class="views-widget">
                                                                 <div class="form-item form-type-textfield form-item-title">
                                                                     <input type="text" id="edit-title"
-                                                                           name="title" value="" size="30"
+                                                                           name="search" value="" size="30"
                                                                            maxlength="128" class="form-text">
                                                                 </div>
-                                                            </div>
-                                                            <div class="description">
-                                                                Do not use spaces within course code values
                                                             </div>
                                                         </div>
                                                         <div class="views-exposed-widget views-submit-button">
