@@ -19,7 +19,7 @@ const popUp =
     '      </div>' +
     '      <div class="modal-footer">' +
     '        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>' +
-    '        <button type="button" class="btn btn-primary" onclick="logOut()">Sign out</button>' +
+    '        <button type="button" class="btn btn-primary" onclick="goToLogout()">Sign out</button>' +
     '      </div>' +
     '    </div>' +
     '  </div>' +
@@ -35,9 +35,8 @@ function goToLogin() {
     window.location = "/login";
 }
 
-function logOut() {
-    localStorage.removeItem("session");
-    window.location = "/";
+function goToLogout() {
+    window.location = "/logout";
 }
 
 function getNavbar() {
@@ -72,7 +71,7 @@ function getNavbar() {
 }
 
 function isAuthenticated() {
-    return !!localStorage.getItem("session");
+    return localStorage.getItem("session");
 }
 
 function getUsername() {

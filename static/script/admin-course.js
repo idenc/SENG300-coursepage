@@ -14,6 +14,7 @@ $(function(){
     var departmentId = $("#departmentSelect");
     var preId = $("#inputPrerequisite");
     var antId = $("#inputAntirequisite");
+    var modalTitlteId = $("#modalTitle");
 
     // Generate hash map
     var dict = {}
@@ -64,12 +65,11 @@ $(function(){
             antId.tagit('createTag', obj.course_code);
         });
        
-        $("#modalTitle").text(course.dep_name + " " + course.code);
-        $("#yearSelect option[value='"+course.year+"']").prop('selected', true);
-        $("#departmentSelect option[value='"+course.dep_code+"']").prop('selected', true);
+        modalTitlteId.text(course.dep_name + " " + course.code);
+        yearId.val(course.year).niceSelect('update');
+        departmentId.val(course.dep_code).niceSelect('update');
         titleId.val(course.title);
         descriptionId.val(course.description);
-
         $("#courseDetail").modal("show");
     
     });
