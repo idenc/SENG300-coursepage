@@ -232,7 +232,8 @@ def add_course():
             error = "Problem creating course: " + str(e)
     return render_template('addcourse.html', dep_names=names, error=error)
 
-@app.route('/admin/programs', methods = ['POST', 'GET'])
+
+@app.route('/admin/programs', methods=['POST', 'GET'])
 def admin_program():
     """
     Handles admin program page's functionality
@@ -242,10 +243,8 @@ def admin_program():
     cur = conn.cursor()
     if request.method == 'POST':
         # User adds a new program
-        if request.args.get("add"):           
+        if request.args.get("add"):
             cur.execute("SELECT * FROM department")
-            names = cur.fetchall()
-            error = None
             program_title = request.form["new_program_title"]
             program_options = request.form["new_program_options"]
             program_length = request.form["new_program_length"]
@@ -253,21 +252,21 @@ def admin_program():
             default_type = "BSc"
             try:
                 # Insert a new record into program table
-                query = f"INSERT INTO program (`program_name`, `program_dep`, `program_type`, `program_length`, `num_options`)" \
-                        f" VALUES ('{program_title}', {program_dep}, '{default_type}', {program_length}, {program_options})"
+                query = f"INSERT INTO program" \
+                    f" (`program_name`, `program_dep`, `program_type`, `program_length`, `num_options`)" \
+                    f" VALUES ('{program_title}', {program_dep}, '{default_type}', {program_length}, {program_options})"
                 print(query)
                 cur.execute(query)
                 conn.commit()
-                error = "Success!"
             except Exception as e:
                 # Handle exception
-                error = "Problem creating course: " + str(e) 
+                pass
         # User deletes the program
         elif request.args.get("delete"):
             data = None
             jsonData = request.get_json()
             program_id = jsonData["id"]
-            try: 
+            try:
                 # Delete program's id from requirements table and program table
                 delete_course_query(conn, cur, "program_requirements", "program_code", program_id)
                 delete_course_query(conn, cur, "program", "program_code", program_id)
@@ -277,8 +276,8 @@ def admin_program():
                 traceback.print_exc()
                 data = {"error": "Please try again."}
             finally:
-                return json.dumps(data)     
-        # User updates the program
+                return json.dumps(data)
+                # User updates the program
         elif request.args.get("update"):
             data = None
             jsonData = request.get_json()
@@ -287,12 +286,13 @@ def admin_program():
             program_length = jsonData["length"]
             dep_code = jsonData["dep_code"]
             num_options = jsonData["num_options"]
-            courses = jsonData["courses"]  
+            courses = jsonData["courses"]
 
             try:
                 # Update program's info
                 query = f"UPDATE program " \
-                    f"SET program_name= '{program_name}', program_dep='{dep_code}', program_length={program_length}, num_options={num_options} " \
+                    f"SET program_name= '{program_name}', program_dep='{dep_code}', program_length={program_length}, " \
+                    f"num_options={num_options} " \
                     f"WHERE program_code={program_code}"
                 cur.execute(query)
                 conn.commit()
@@ -340,6 +340,7 @@ def admin_program():
 
     return render_template('admin-program.html', data=data, deps=deps, courses=courses)
 
+
 @app.route('/admin/courses', methods=['POST', 'GET'])
 def admin_course():
     """
@@ -351,10 +352,8 @@ def admin_course():
     error = None
     if request.method == 'POST':
         # User adds a new course
-        if request.args.get("add"):       
+        if request.args.get("add"):
             cur.execute("SELECT * FROM department")
-            names = cur.fetchall()
-            error = None
             course_title = request.form["new_course_title"]
             course_description = request.form["new_course_description"]
             course_year = request.form["new_course_year"]
@@ -371,7 +370,7 @@ def admin_course():
                 # Handle exception
                 error = "Problem creating course: " + str(e)
         # User deletes the course
-        elif request.args.get("delete"): 
+        elif request.args.get("delete"):
             data = None
             jsonData = request.get_json()
             course_id = jsonData["id"]
@@ -399,8 +398,8 @@ def admin_course():
             description = jsonData["description"]
             year = jsonData["year"]
             dep_code = jsonData["dep_code"]
-            pre_reqs = jsonData["pre_reqs"]     # JSON array containing ids of prerequisite
-            anti_reqs = jsonData["anti_reqs"]   # JSON array containing ids of antirequisite
+            pre_reqs = jsonData["pre_reqs"]  # JSON array containing ids of prerequisite
+            anti_reqs = jsonData["anti_reqs"]  # JSON array containing ids of antirequisite
 
             try:
                 # Update the record
@@ -461,6 +460,7 @@ def admin_course():
 
     return render_template('admin-course.html', data=data, deps=deps, error=error)
 
+
 @app.route("/allcourses", methods=['GET'])
 def get_courses():
     """
@@ -487,6 +487,7 @@ def get_courses():
         data.append(course)
     return json.dumps(data)
 
+
 @app.route("/logout")
 def logout():
     """
@@ -494,6 +495,7 @@ def logout():
     :return: Logout page
     """
     return render_template("logout.html")
+
 
 def delete_course_query(conn, cur, table, para, id):
     """
@@ -509,6 +511,7 @@ def delete_course_query(conn, cur, table, para, id):
         f"WHERE `{para}` = {id}"
     cur.execute(query)
     conn.commit()
+
 
 def update_req(cur, conn, table, record_id, req_ids):
     """
