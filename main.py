@@ -168,7 +168,7 @@ def search_courses(search):
     cur.execute("SELECT c.crs_code, c.crs_title, c.crs_description, c.crs_year, d.dep_name"
                 " FROM course AS c, department AS d WHERE (c.crs_title LIKE %s OR"
                 " c.crs_code LIKE %s) AND c.dep_code = d.dep_code GROUP BY c.crs_year, c.crs_code, d.dep_name",
-                [("%" + str(search_string) + "%"), ("%" + str(search_string) + "%")])
+                [("%" + str(search_string) + "%"), ("%" + str(search_string)[2] + "%")])
     courses = cur.fetchall()
     pre_reqs, anti_reqs = get_requisites(courses, cur)
     return render_template('listing.html', name="Search", courses=courses, pre_reqs=pre_reqs, anti_reqs=anti_reqs)
